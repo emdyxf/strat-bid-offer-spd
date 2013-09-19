@@ -1,0 +1,34 @@
+_STRT_NEW_FORM_ 1 VALID_SELECT 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:VALID_SELECT
+/******************************************************************
+Reserved Rule. Runs when selecting a row.
+******************************************************************/
+
+FlexAppRules::RowInfoArray row;
+int nRows = MainGetSelectedRows(row);
+
+if (nRows == 0)
+	return true;
+
+char BOStratPort[32]="";
+Get_Column_Str("BO_PORT",BOStratPort); // Display Bid-Offer orders together
+
+if (strstr(BOStratPort, TraderName()))
+{
+	FilterOinfo(NULL,NULL,BOStratPort);
+}
+else
+{
+	if(nRows >1)
+	{
+		FilterOinfo(NULL,NULL,PORTFOLIO);
+	}
+	else
+	{
+		FilterOinfo(SYM,NULL,PORTFOLIO);
+	}
+}
+
+return true;
+
+
+_END_FORM_ *****************************************

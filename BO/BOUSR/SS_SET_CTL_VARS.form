@@ -1,0 +1,37 @@
+_STRT_NEW_FORM_ 1 SS_SET_CTL_VARS 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:SS_SET_CTL_VARS
+/******************************************************************
+SS Rule. Aggregate and populate total BUY/SELL quantities
+******************************************************************/
+
+char szMWPort[32] = "";
+sprintf(szMWPort,"%s",FixedMWPort());
+if(Is_Port_Loaded(szMWPort))
+{
+
+        using namespace FlexAppRules;
+        static ColumnInfo cTotalBuyQty("TOTAL_BUY_QTY"), cTotalSellQty("TOTAL_SELL_QTY");
+        RowInfoArray aRows;
+        int iMWRows = MainGetRows(NULL,szMWPort,aRows);
+        for(int i = 0; i < iMWRows; i++)
+        {
+                RowInfo & MWrow = aRows[i];
+                RowInfoArray pRows;
+                int iConstituentRows = MainGetRows(MWrow.GetSymbol(),NULL,pRows);
+                int iTotalBuyQty = 0, iTotalSellQty = 0;
+                for(int j = 0; j < iConstituentRows; j++)
+                {
+                        RowInfo & row = pRows[j];
+                        PositionInfo pInfo;
+                        row.GetPositionInfo(pInfo);
+                        iTotalBuyQty += pInfo.GetExecutedBuyLong();
+                        iTotalSellQty += pInfo.GetExecutedSellLong();
+                }
+                MWrow.SetCellValue(cTotalBuyQty,iTotalBuyQty,false);
+                MWrow.SetCellValue(cTotalSellQty,iTotalSellQty,false);
+        }
+}
+
+return 1;
+
+
+_END_FORM_ *****************************************

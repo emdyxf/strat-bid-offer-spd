@@ -1,0 +1,71 @@
+_STRT_NEW_FORM_ 1 BO_RPL_COUNT 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:BO_RPL_COUNT
+/***************************************************
+BO Strat Rule. Manage replace count
+**************************************************/
+
+double nQuoteRpl = Get_param_val(0);
+double nHedgeRpl = Get_param_val(1);
+double nActive = Get_param_val(2);
+char szPort[32] = "";
+Get_param_str(szPort, 0);
+
+static ColumnInfo clStratName("STRAT_NAME"), clQuoteRpl("QUOTE_RPL"), clQuoteRplGrp("QUOTE_RPL_GRP"), clHedgeRpl("HEDGE_RPL"), clStatus("BO_STATUS"), clMaxRpl("BO_MAXRPL");
+
+FlexAppRules::RowInfoArray aRows;
+int nStratRow = MainGetRows(NULL, szPort, aRows);
+
+if (nStratRow == 2)
+{
+	aRows[0].SetCellValue(clQuoteRpl, nQuoteRpl, true);
+	aRows[1].SetCellValue(clQuoteRpl, nQuoteRpl, true);	
+	aRows[0].SetCellValue(clQuoteRplGrp, nQuoteRpl/2.0, true);
+	aRows[1].SetCellValue(clQuoteRplGrp, nQuoteRpl/2.0, true);
+	aRows[0].SetCellValue(clHedgeRpl, nHedgeRpl, true);
+	aRows[1].SetCellValue(clHedgeRpl, nHedgeRpl, true);
+}
+
+FTStr szStratName;
+aRows[0].GetCellValue(clStratName, szStratName);
+
+int nRplLimit = aRows[0].GetCellValue(clMaxRpl, -1.0);
+
+FTStr szStatus1, szStatus2;
+aRows[0].GetCellValue(clStatus, szStatus1);
+aRows[1].GetCellValue(clStatus, szStatus2);
+
+if (nActive!=1 && nRplLimit>0 && nQuoteRpl >= nRplLimit )
+{
+	if (szStatus1==STRAT_STATUS_CXLD && szStatus2==STRAT_STATUS_CXLD)
+	{
+		FTStr msgStop; msgStop="Strat ["; msgStop+=szStratName;
+		msgStop+="] Already Cancelled : QuoteRpl ["; msgStop+=(int)nQuoteRpl;
+		msgStop+="] >= RplLimit ["; msgStop+=nRplLimit; msgStop+="]";
+		Pop_Msg(msgStop);	
+	}
+	else if (szStatus1==STRAT_STATUS_STOP && szStatus2==STRAT_STATUS_STOP)
+	{
+		FTStr msgStop; msgStop="Strat ["; msgStop+=szStratName;
+		msgStop+="] Already Stopped : QuoteRpl ["; msgStop+=(int)nQuoteRpl;
+		msgStop+="] >= RplLimit ["; msgStop+=nRplLimit; msgStop+="]";
+		Pop_Msg(msgStop);
+	}
+	else
+	{
+		MsgBox("Strategy Stopped", "MaxRpl Breached!", 'E');
+		
+		FTStr msgStop; msgStop="Strat ["; msgStop+=szStratName;
+		msgStop+="] Stopped : QuoteRpl ["; msgStop+=(int)nQuoteRpl;
+		msgStop+="] >= RplLimit ["; msgStop+=nRplLimit; msgStop+="]";
+		Pop_Msg_Color(msgStop, 0, "red", "black");	
+
+		AddRowAlert(msgStop.str(), 1, 0, false);
+		
+		aRows[0].SetCellValue(clStatus, STRAT_STATUS_STOP, true);
+		aRows[1].SetCellValue(clStatus, STRAT_STATUS_STOP, true);
+	}
+}
+
+return true;
+
+
+_END_FORM_ *****************************************

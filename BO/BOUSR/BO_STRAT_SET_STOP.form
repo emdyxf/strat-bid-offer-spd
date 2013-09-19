@@ -1,0 +1,22 @@
+_STRT_NEW_FORM_ 1 BO_STRAT_SET_STOP 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:BO_STRAT_SET_STOP
+/***************************************************
+BO Strat Rule. Set all running strategy to "Stopped" when all client orders are cancelled
+**************************************************/
+
+if(!strcmp(PORTFOLIO, FixedMWPort()))
+return true;
+
+FTStr szBoPort, szMsg;
+Get_Column_Str("BO_PORT", szBoPort.str());
+
+if(strstr(szBoPort.str(), "BO_") && (BUY_LEAVES==0 &&  SELL_LEAVES==0))
+{
+	szMsg="Strat [";szMsg+=szBoPort;szMsg+="] : No Leaves!";
+	Pop_Msg(szMsg);
+	Set_Column_Str_Save("BO_STATUS", STRAT_STATUS_CXLD);
+}
+
+return true;
+
+
+_END_FORM_ *****************************************

@@ -1,0 +1,121 @@
+l2Act0:Act:r SS_LAYOUT_DEF SINGLE
+l2Act1:Act:r SS_LAYOUT_DEF MIDDLE
+l2Act2:Act:r SS_LAYOUT_DEF RIGHT
+l2Act3:Act:r SS_LAYOUT_DEF SHIFT_LEFT
+l2Act6:Act:r SS_LAYOUT_DEF CTRL_LEFT
+PagoFont:NOANTIALIAS:0
+PagoFont:DPI:0
+l2Act9:Act:r SS_LAYOUT_DEF DOUBLE
+HBAR_E_.PAIR_TRADE:Tools:pos=0;bgcol=15591907;show=Y;
+HBAR_E_.PAIR_TRADE:Tools2:pos=1;bgcol=15591907;show=Y;
+HBAR_ALERT:Tools:pos=0;bgcol=15527148;show=Y;
+MTRXTREEGRP:itm5:STRAT_NAME
+MTRXTREEGRP:itm4:STRAT_NAME.PRODUCT
+MTRXTREEGRP:itm3:PORTFOLIO.PAIR_SYM
+MTRXTREEGRP:itm2:SYM.STRAT_NAME
+MTRXTREEGRP:itm1:STRAT_NAME.SYM
+MTRXTREEGRP:itm0:BO_STRATNAME
+MtrxHdrFnt:SDET:Arial  9
+MtrxHdrFnt:MAIN:Sans 8
+HBAR_MAIN:Tools3:pos=2;bgcol=14473941;show=N;
+HBAR_MAIN:FixBtns:pos=1;bgcol=14473941;show=Y;
+HBAR_MAIN:Tools2:pos=2;bgcol=14473941;show=N;
+HBAR_MAIN:Tools:pos=3;bgcol=2697513;show=Y;
+HBAR_MAIN:Summary:pos=7;bgcol=14473941;show=N;
+HBAR_MAIN:ButtonPanel3:pos=6;bgcol=14473941;show=N;
+HBAR_MAIN:ButtonPanel1:pos=5;bgcol=14473941;show=N;
+HBAR_MAIN:TopButton:pos=1;bgcol=14473941;show=N;
+HBAR_MAIN:MenuBar:pos=0;bgcol=2697513;show=Y;
+ZACCT:ShowFlag:Rows_Summ
+MAIN:LastGrp:STRAT_NAME
+MAIN:ShowFlag:Rows_Summ
+GrpMgr:ShowFilteredRows:0
+GrpMgr:Border:2
+GrpMgr:SingleClickAction:3
+GrpMgr:AddBunch:1
+GrpMgr:RowHint:1
+GrpMgr:SYNC:1
+ORDERCHAIN:COLUMN:Id,Type,Port,Symbol,Side,Dest,Price,Qty,Exec,Leaves,Status,Time,Tx-Time,Text,Running-Avg
+GrpMgr:ReComputeSecond:3
+MAIN:MatrixTreeCol-2:5 22 BO_PNL_GRP
+MAIN:MatrixTreeCol1:5 18 BO_STATUS
+MAIN:MatrixTreeCol2:5 9 QUOTE_RPL_GRP
+MAIN:MatrixTreeCol3:5 9 STRAT_POS_GRP
+MAIN:MatrixTreeCol4:5 22 BO_PNL_GRP
+MAIN:MatrixTreeCol5:END
+ORDERCHAIN:SORTCOLUMN:2
+ORDERCHAIN:SORTORDER:1
+SingleStockSym:Script:r SS_OPEN
+SingleStockSym:Script-Old:r SS_OPEN
+HBAR_SDET:Tools2:pos=2;bgcol=14473941;show=N;
+HBAR_SDET:Tools:pos=1;bgcol=14473941;show=N;
+HBAR_SDET:ButtonPanel1:pos=3;bgcol=14473941;show=N;
+HBAR_SDET:TopButton:pos=1;bgcol=15527148;show=Y;
+HBAR_SDET:MenuBar:pos=0;bgcol=15527148;show=Y;
+SDET:ShowFlag:Rows_Summ
+SDET:LastGrp:WAVE.SYM
+SDET:MatrixTree:1
+SDET:MatrixTreeCol-2:5 22 ORDERED_SHARES
+SDET:MatrixTreeCol1:END
+SummaryPanel:Toggle:0
+Dlg:_DLG_BIDOFFERY:268
+Dlg:_DLG_BIDOFFERX:267
+Dlg:_DLG_EDIT_ARBY:233
+Dlg:_DLG_EDIT_ARBX:126
+Dlg:_LINK_PAIRSY:315
+Dlg:_LINK_PAIRSX:437
+Dlg:_CONFIGY:288
+Dlg:_CONFIGX:1902
+Dlg:_CASH_FUTUREY:208
+Dlg:_CASH_FUTUREX:471
+Dlg:_TRADEFILEY:255
+Dlg:_TRADEFILEX:226
+Dlg:_DLG_CNC_MODIFYY:92
+Dlg:_DLG_CNC_MODIFYX:436
+Dlg:_CF_MODIFYX:273
+Dlg:_CF_MODIFYY:119
+Dlg:A_CME_MCXX:1573
+Dlg:A_CME_MCXY:122
+Dlg:_CME_MCXX:456
+Dlg:_CME_MCXY:186
+Dlg:_TESTDLGX:1221
+Dlg:_TESTDLGY:290
+Dlg:_ADV_SETSX:195
+Dlg:_ADV_SETSY:259
+Dlg:_CLOSE_POSITIONS_DLGX:285
+Dlg:_CLOSE_POSITIONS_DLGY:233
+Dlg:_COMM_ARBX:620
+Dlg:_COMM_ARBY:263
+Dlg:_DLG_BUILD_ARBX:364
+Dlg:_DLG_BUILD_ARBY:309
+Dlg:_DLG_BUILD_BIDOFFERX:310
+Dlg:_DLG_BUILD_BIDOFFERY:292
+Dlg:_TESTX:713
+Dlg:_TESTY:336
+Dlg:_BID_OFFERX:312
+Dlg:_BID_OFFERY:336
+E_.PAIR_TRADE.RELIANCE:ShowFlag:Rows
+SignOn:StreetLoginMode:0
+Skin:Default:darknight
+Skin:Enabled:1
+CustomFont:Name:Tahoma  9
+MTRXTREEGRPSDET:itm0:WAVE.SYM
+MTRXTREEGRPSDET:itm1:WAVE
+MTRXTREEGRPSDET:itm2:ORDER_STATUS
+MTRXTREEGRPSDET:itm3:MEMO
+MTRXTREEGRPSDET:itm4:ORD_SIDE.INSTRUMENT.SYM
+MTRXTREEGRPSDET:itm5:ORD_SIDE
+Alerts:ColumnOrder:3,1,35;4,1,75;5,1,669;6,1,66;7,1,147;8,1,137;9,1,138;1,0,0;2,0,0;
+Alerts:SortInfo:3,0
+Matrix:Tree:1
+SingleStock:Enable:1
+TickFilter:FilterDuration:0
+TickFilter:TicksToTrigger:0
+TickFilter:FilterFlag:0
+TickFilter:TrdSize:0
+TickFilter:SeparateThread:1
+TickFilter:Filter:-1
+TickFilter:LastPriceChange:0.000000
+L2:CROSS:0
+L2:AddDescrn2Px:1
+L2:ShowTtlSizeBar:0

@@ -1,0 +1,56 @@
+_STRT_NEW_FORM_ 1 UPDATE_TLB 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:UPDATE_TLB
+using namespace FlexAppRules;
+
+static char szTickerText[256] = "", szCommodity[32] = "", szTickerName[32] = ""; 
+szTickerText[0] = '\0'; szCommodity[0] = '\0'; szTickerName[0] = '\0';
+//static MarketInfo * ptrCmeMInfo; ptrCmeMInfo = NULL;
+//static MarketInfo * ptrShfeMInfo; ptrShfeMInfo = NULL;
+//static CMData *pData; pData = NULL;
+static int iInstrType = 1; iInstrType = 0;
+static enCMInstrType eInstrType = enCopper;
+
+//_dCurrencyRate = GlobalValue("CURRENCY_RATE");
+
+for(iInstrType = 0; iInstrType < 3; iInstrType++)
+{
+	eInstrType = GetInstrType(iInstrType);
+	sprintf(szCommodity,GetProductName(eInstrType));
+/*
+	pData = GetCMData(szCommodity);
+	if(!pData)
+	{
+		return 1;
+	}
+	ptrCmeMInfo = new MarketInfo(pData->GetCurrentCmeExpiry());
+	ptrShfeMInfo = new MarketInfo(pData->GetCurrentShfeExpiry());
+*/
+	sprintf(szTickerName,"lblTickerText%s",szCommodity);
+/*
+	_dCmeBidSize = ptrCmeMInfo->GetBidSize();
+	_dCmeAskSize = ptrCmeMInfo->GetAskSize();
+	_dShfeBidSize = ptrShfeMInfo->GetBidSize();
+	_dShfeAskSize = ptrShfeMInfo->GetAskSize();
+
+	if(_dCmeBidSize + _dCmeAskSize>0 && _dShfeBidSize + _dShfeAskSize > 0)
+	{
+		_dCmeBid = ptrCmeMInfo->GetBid();
+		_dCmeAsk = ptrCmeMInfo->GetAsk();
+		_dShfeBid = ptrShfeMInfo->GetBid();
+		_dShfeAsk = ptrShfeMInfo->GetAsk();
+		GetGlobalSpreads(GetInstrTypeFromProduct(szCommodity));
+
+		sprintf(szTickerText," %s Spread : %0.4f / %0.4f ",szCommodity, _dPositiveSpread,_dOppositeSpread );
+	}
+	else
+	{
+		sprintf(szTickerText," %s Spread : No Market Data ", szCommodity);
+	}
+*/
+	sprintf(szTickerText," %s Position : No Data ", szCommodity);
+	TLB_Set_Property(szTickerName, "label", szTickerText);
+
+}
+return 1;
+
+
+_END_FORM_ *****************************************

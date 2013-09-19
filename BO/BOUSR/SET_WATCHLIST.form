@@ -1,0 +1,7 @@
+_STRT_NEW_FORM_ 1 SET_WATCHLIST 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:SET_WATCHLIST
+Set_Column_Str_Save("STRAT_NAME", PORTFOLIO);
+
+return 1;
+
+
+_END_FORM_ *****************************************

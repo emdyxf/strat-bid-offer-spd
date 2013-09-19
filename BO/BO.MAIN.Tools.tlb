@@ -1,0 +1,218 @@
+widget:button
+Name:btnManualBuyOrd
+Label:~  BUY  
+script:osend CEBUAT BUY 1 SHARES LIMIT DAY BID
+foreground:#292929
+background:#5678CE
+__END__
+__EndCfg
+widget:button
+Name:btnManualSellOrd
+Label:~ SELL 
+script:osend CEBUAT SELL 1 SHARES LIMIT DAY BID
+foreground:#292929
+background:#BC5457
+__END__
+__EndCfg
+widget:label
+Name:BO_SPD
+Label:~  ||  BO Spread  | 
+script:
+foreground:#BDDFFF
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:TlbBtnCreateStrategy
+Label:~ ADD 
+script:o SHOW_DIALOG BID_OFFER ADD
+foreground:#FFFFFF
+background:#344FAE
+__END__
+__EndCfg
+widget:button
+Name:TlbBtnEditStrategy
+Label:~ EDIT 
+script:o SHOW_DIALOG BID_OFFER EDIT
+foreground:#FFFFFF
+background:#344FAE
+__END__
+__EndCfg
+widget:label
+Name:
+Label:~ | 
+script:
+foreground:#ECECEC
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:TlbBtnCancelStrategy
+Label:~ CXL 
+script:o BO_STRAT_CONTROL CANCEL
+foreground:#FFFFFF
+background:#9B302E
+__END__
+__EndCfg
+widget:label
+Name:
+Label:~ | 
+script:
+foreground:#ECECEC
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:TlbBtnStart
+Label:Icons/play.png~
+script:o BO_STRAT_CONTROL START
+foreground:#FFFFFF
+background:#C4E5D0
+__END__
+__EndCfg
+widget:button
+Name:TlbBtnStopOne
+Label:Icons/stop.png~
+script:o BO_STRAT_CONTROL STOP
+foreground:#FFFFFF
+background:#F6E3E3
+__END__
+__EndCfg
+widget:label
+Name:
+Label:~ | 
+script:
+foreground:#ECECEC
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:TlbBtnStopAll
+Label:Icons/stop_all.png~
+script:o BO_STRAT_CONTROL CANCELALL
+foreground:#FFFFFF
+background:#FFD7BE
+__END__
+__EndCfg
+widget:label
+Name:
+Label:~ | 
+script:
+foreground:#ECECEC
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:tlbBtnLadder
+Label:Icons/ladder.png~
+script:o L2_LAUNCH
+foreground:#FFFFFF
+background:#BFBFBF
+__END__
+__EndCfg
+widget:label
+Name:
+Label:~ | 
+script:
+foreground:#ECECEC
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:tlbBtnParams
+Label:~PARAMS
+script:col BO_PORT
+foreground:#FFFFFF
+background:#5C775A
+__END__
+__EndCfg
+widget:button
+Name:TlbHomeBtn
+Label:~ EXECS 
+script:col BO_MODE
+foreground:#FFFFFF
+background:#5C775A
+__END__
+__EndCfg
+widget:button
+Name:tlbBtnMarket
+Label:~ MKT 
+script:col BID
+foreground:#FFFFFF
+background:#65585B
+__END__
+__EndCfg
+widget:button
+Name:tlbBtnPosition
+Label:~ POS 
+script:col EXCHG
+foreground:#FFFFFF
+background:#65585B
+__END__
+__EndCfg
+widget:label
+Name:
+Label:~ | 
+script:
+foreground:#FFFFFF
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:tlbBtnFilter
+Label:Icons/filter.png~
+script:o FILTER_MAIN_SCREEN SPREADS
+foreground:#FFFFFF
+background:#F2E4EA
+__END__
+__EndCfg
+widget:label
+Name:
+Label:~ | 
+script:
+foreground:#FFFFFF
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:btnReport
+Label:~ Report 
+script:o EXPORT_COLS CHILD
+foreground:#292929
+background:#EDD440
+__END__
+__EndCfg
+widget:label
+Name:
+Label:~ | AVAIL FUND: 
+script:
+foreground:#ECECEC
+background:#292929
+__END__
+__EndCfg
+widget:label
+Name:lblAvalFund
+Label:~58713400.93
+script:
+foreground:#F2FF00
+background:#292929
+__END__
+__EndCfg
+widget:label
+Name:lblCMD
+Label:~ | CMD : 
+script:
+foreground:#FFFFFF
+background:#292929
+__END__
+__EndCfg
+widget:entry
+Name:CMD
+Label:
+script:o RUNCMD
+foreground:#000000
+background:#F0FFFF
+__END__
+width:18
+value:
+__EndCfg

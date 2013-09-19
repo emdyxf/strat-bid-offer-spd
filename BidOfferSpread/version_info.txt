@@ -1,0 +1,108 @@
+PROJ_BO_v2.5.04.20130911
+- Fixed: To cater for pend-cxl/mkt-data race condition, auto cancelling to account for pending-cxl/pending-rpl orders, 
+
+PROJ_BO_v2.5.03.20130816
+- Enhancement: All cancel request are counted towards MaxRpl.
+- Enhancement: Upon MaxRpl breach, all active orders will be cancelled, strategy will be stopped.
+
+
+PROJ_BO_v2.5.02.20130806
+- Enhancement: Enable new order from strategy ladder ONLY for hedge contract, quote contract ladder order will be blocked
+
+PROJ_BO_v2.5.01.20130802
+- Feature: Support sending new order from strategy ladder to manage strategy position directly
+- Enhancement: Self-Cross check with comprehensive logging
+
+===============
+
+PROJ_BO_v2.4.09.20130724
+- Enhancement: Do not send cancel request when order is un-acked, to resolve race condition with CTP
+
+---------------
+
+PROJ_BO_v2.4.08.20130711
+- Enhancement: Optimized ladder layout config to allow up to 36 ladders at the same time
+
+---------------
+
+PROJ_BO_v2.4.07.20130710
+- Enhancement: Optimize OnEvent Rules for event handling
+- Enhancement: Disable auto-refresh on dialog box
+
+---------------
+
+PROJ_BO_v2.4.06.20130709
+- Fixed: Payup Ticks in the hedge leg sell side should be added to benchmark spread
+- Enhancement: Make default MAX_LOSS parameter to be 5000
+
+---------------
+
+PROJ_BO_v2.4.05.20130708
+- Enhancement: When executions received during pending-cancel of replace flow, replace process will be aborted and positions will be managed upon next market tick
+- Enhancement: Modified default ticksize for SHFE Gold to 0.05 (in accordance to exchange statement)
+
+---------------
+
+PROJ_BO_v2.4.04.20130705
+- Feature: Support cancelling strategy street order from strategy ladder
+- Feature: Support displaying account level position and strategy level position on ladder
+- Feature: Support generating report for all street orders in the system
+- Feature: Support logging of order side/price before preventing from self-trading
+
+---------------
+
+PROJ_BO_v2.4.03.20130628
+- Enhancement: Disable orders to be sent from strategy portfolio via Ladder
+- Enhancement: Orders can be sent from market watch portfolio
+
+---------------
+
+PROJ_BO_v2.4.02.20130621
+- Enhancement: Support Displaying backend strategy running state in App: running flag, strategy loss, market snapshot at max_loss
+- Enhancement: Optimized execution mapping by integer comparison of LegId, instead of string comparison of ClientOrderID
+
+---------------
+
+PROJ_BO_v2.4.01.20130619
+- Enhancement: Allow Strategy to continue running when MAX_POS is breached, but quoting will only be on the side to reduce net position
+
+===============
+
+PROJ_BO_v2.3.07.20130619
+- Fixed: Stop/restart strategy functions
+
+---------------
+
+PROJ_BO_v2.3.06.20130514
+- Feature: Support re-connect to sym on ValidOrderNew if SymConnection not active
+
+---------------
+
+PROJ_BO_v2.3.05.20130426
+- Feature: Support Displaying replace count and net loss in App group summary page
+
+---------------
+
+PROJ_BO_v2.3.04.20130425
+- Feature: Support Quoting Mode: AGGRESSIVE
+
+---------------
+
+PROJ_BO_v2.3.03.20130424
+- Feature: Support Quoting Mode: CONDITIONAL
+
+---------------
+
+PROJ_BO_v2.3.02.20130423
+- Feature: Display Quote Replace count in App
+- Feature: When MaxRpl Limit is breached, strategy will be stopped, warning will be prompted in App
+
+---------------
+
+PROJ_BO_v2.3.01.20130422
+- Feature: Support Quoting Mode: ALWAYS
+- Feature: Support Contract Symbols: AU, AG, CU, IF
+- Feature: Support SHFE Order Replace via CXL/NEW 
+- Feature: Support Position Management  
+
+===============

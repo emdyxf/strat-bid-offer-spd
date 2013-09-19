@@ -1,0 +1,176 @@
+_STRT_NEW_FORM_ 1 VALID_ORDER 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:VALID_ORDER
+/******************************************************************
+Reserved Rule. Runs before sending out new order.
+******************************************************************/
+
+char strDebug[216]="";
+char strFix[216]="";
+char strRule[20]="VALID_ORDER";
+int i = 0;
+
+char BOStratPort[32]="";
+Get_Column_Str("BO_PORT",BOStratPort);
+
+int nClientID = Get_Order_ClientId();
+
+if (strstr(BOStratPort, FLEX_OMRULE_BO_SPD)) // If BO_PORT contains FLEX_OMRULE_BO_SPD -> Send Bid-Offer Strat order to OMRule Loopback
+{	
+	if (nClientID == LADDER_ORD)
+	{
+		sprintf(strDebug,"%s: SYM[%s] Portfolio[%s] [No direct order from Strat Port!]",strRule,SYM,PORTFOLIO);
+		Pop_Msg1(strDebug);
+		return false;
+	}
+
+	Set_FixTag_Str(FIX_TAG_STRATEGYNAME,FLEX_OMRULE_BO_SPD);
+	FTStr  ftDest; Get_Default_Listed_Dest(ftDest);
+	Set_FixTag_Str(FIX_TAG_DESTINATION,ftDest.str());
+	Set_FixTag_Str(FIX_TAG_OMUSER,"UA");
+	
+	FTStr szBuffer;
+	double dBuffer;
+	
+	FTStr szBOMode;
+	Get_Column_Str("BO_MODE", szBOMode.str());
+	if (!strcmp(szBOMode.str(), STRAT_MODE_ALWAYS))
+	{
+		szBuffer = MODEID_ALWAYS;
+
+	}
+	else if (!strcmp(szBOMode.str(), STRAT_MODE_CONDITIONAL))
+	{
+		szBuffer = MODEID_CONDITIONAL;
+	}
+	else if (!strcmp(szBOMode.str(), STRAT_MODE_AGGRESSIVE))
+	{
+		szBuffer = MODEID_AGGRESSIVE;
+	}
+	else
+	{
+		Pop_Msg_Color("Invalid Quoting Mode! Cannot send order!", 0, "red", "black");
+		szBuffer = MODEID_INVALID;
+		return false;
+	}
+	Set_FixTag_Str(FIX_TAG_QUOTEMODE_BO, szBuffer.str());
+
+	dBuffer = Value_Cell_Else("BO_STRATID", 0.0);
+	szBuffer= (int)dBuffer;
+	Set_FixTag_Str(FIX_TAG_STRATID_BO, szBuffer.str());
+
+	Get_Column_Str("BO_PORT",szBuffer.str());
+	Set_FixTag_Str(FIX_TAG_STRATPORT_BO, szBuffer.str());
+	
+	Set_FixTag_Str(FIX_TAG_STRATSYM_BO, "");
+	
+	dBuffer = Value_Cell_Else("BO_ORDQTY", 0.0);
+	szBuffer= (int)dBuffer;
+	Set_FixTag_Str(FIX_TAG_ORDQTY_BO, szBuffer.str());
+	
+	dBuffer = Value_Cell_Else("BO_MAXPOS", 0.0);
+	szBuffer= (int)dBuffer;
+	Set_FixTag_Str(FIX_TAG_MAXPOS_BO, szBuffer.str());
+	
+	dBuffer = Value_Cell_Else("BO_LOTSIZE", 0.0);
+	szBuffer= (int)dBuffer;
+	Set_FixTag_Str(FIX_TAG_LOTSIZE_BO, szBuffer.str());
+	
+	dBuffer = Value_Cell_Else("BO_PAYUPTICK", 0.0);
+	szBuffer= (int)dBuffer;
+	Set_FixTag_Str(FIX_TAG_PAYUPTICK_BO, szBuffer.str());
+	
+	dBuffer = Value_Cell_Else("BO_MAXRPL", 0.0);
+	szBuffer= (int)dBuffer;
+	Set_FixTag_Str(FIX_TAG_MAXRPL_BO, szBuffer.str());
+
+	dBuffer = Value_Cell_Else("BO_STGCNT", 0.0);
+	szBuffer= (int)dBuffer;
+	Set_FixTag_Str(FIX_TAG_STGMAXCOUNT_BO, szBuffer.str());
+	
+	dBuffer = Value_Cell_Else("BO_SPDINT", 0.0);
+	szBuffer= (int)dBuffer;
+	Set_FixTag_Str(FIX_TAG_STGSPDINTERVAL_BO, szBuffer.str());
+	
+	dBuffer = Value_Cell_Else("BO_MAXLOSS", 0.0);
+	sprintf(szBuffer.str(), "%0.4f", dBuffer);
+	Set_FixTag_Str(FIX_TAG_MAXLOSS_BO, szBuffer.str());
+	
+	// Set Leg ID to identify the client order
+	FTStr szLeg;
+	Get_Column_Str("BO_LEG",szLeg.str());
+	if (Get_Order_Side() == CONST_BUY_SIDE)
+	{
+		if (!strcmp(szLeg.str(), "QUOTE"))
+		{
+			Pop_Msg("Bid Quote!");
+			szBuffer = LEGID_BO_BQ;
+			Set_FixTag_Str(FIX_TAG_LEGID_BO, szBuffer.str());
+		}
+		else if (!strcmp(szLeg.str(), "HEDGE"))
+		{
+			Pop_Msg("Bid Hedge!");
+			szBuffer = LEGID_BO_BH;
+			Set_FixTag_Str(FIX_TAG_LEGID_BO, szBuffer.str());
+		}
+		else
+		{
+			Pop_Msg_Color("Invalid LEG! Cannot send order!", 0, "red", "black");
+			return false;
+		}
+		dBuffer = Value_Cell_Else("BO_BIDSPD", 0.0);
+		sprintf(szBuffer.str(), "%0.4f", dBuffer);
+		Set_FixTag_Str(FIX_TAG_BENCHMARK_BO, szBuffer.str());
+	}
+	else if( Get_Order_Side() == CONST_SELL_SIDE)
+	{
+		if (!strcmp(szLeg.str(), "QUOTE"))
+		{
+			Pop_Msg("Offer Quote!");
+			szBuffer = LEGID_BO_OQ;
+			Set_FixTag_Str(FIX_TAG_LEGID_BO, szBuffer.str());
+		}
+		else if (!strcmp(szLeg.str(), "HEDGE"))
+		{
+			Pop_Msg("Offer Hedge!");
+			szBuffer = LEGID_BO_OH;
+			Set_FixTag_Str(FIX_TAG_LEGID_BO, szBuffer.str());
+		}
+		else
+		{
+			Pop_Msg_Color("Invalid LEG! Cannot send order!", 0, "red", "black");
+			return false;
+		}
+		dBuffer = Value_Cell_Else("BO_OFFERSPD", 0.0);
+		sprintf(szBuffer.str(), "%0.4f", dBuffer);
+		Set_FixTag_Str(FIX_TAG_BENCHMARK_BO, szBuffer.str());
+	}
+	else
+	{
+		Pop_Msg_Color("Invalid SIDE! Cannot send order!", 0, "red", "black");
+		return false;
+	}
+		
+	Set_FixTag_Str(FIX_TAG_RUNNING_BO,"1");
+	
+	FTStr msgSub; msgSub="VALID_ORDER: Subcribing "; msgSub+=BOStratPort;
+	Pop_Msg(msgSub);
+	
+	CServerCommand cmd;
+	cmd.SetCommandName("SUBSCRIBE");
+	cmd.SetParam("TOPIC",BOStratPort);
+	cmd.SymSendCommand();
+	
+	msgSub="VALID_ORDER: Sent Subscription for "; msgSub+=BOStratPort;
+	Pop_Msg(msgSub);
+	
+	Set_Send_Order_Dest(ALGO_DEST);
+}
+else // If NO StratID -> Send normal order to SHFE directly
+{
+	Set_Send_Order_Wave(PORTFOLIO);
+//	Set_Send_Order_Dest(SHFE_DEST);
+}
+
+return true;
+
+
+_END_FORM_ *****************************************

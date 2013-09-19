@@ -1,0 +1,65 @@
+_STRT_NEW_FORM_ 1 LADDER_LAUNCH 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:LADDER_LAUNCH
+//Choose the layout based on the symbol type. Spread Symbols have a different SS or L2 Layout
+FlexAppRules::RowInfoArray rowInfoArr;
+int nSelected = MainGetSelectedRows(rowInfoArr);
+bool bSelectedOutOfWL = false;
+
+for (int i = 0; i < nSelected; i++)
+{
+	if(strstr(rowInfoArr[i].GetSymbol(),"-")) // Reserved: Handling Spread Ladder
+	{
+	}
+	else // Handling Outright Ladder
+	{		
+		FlexAppRules::RowInfoArray tmpRowInfoArr;
+		int nWatchListSelected = 0;
+		nWatchListSelected = MainGetRows(rowInfoArr[i].GetSymbol(), FixedMWPort(), tmpRowInfoArr);
+		
+		// If the selected symbol is not from WatchList, but available in WatchList
+		// Bring up ladder from WatchList
+		if (nWatchListSelected > 0 && strcmp(rowInfoArr[i].GetPortfolio(),FixedMWPort()))
+		{
+			rowInfoArr[i].Unselect();
+			tmpRowInfoArr[0].Select();	
+			bSelectedOutOfWL = true;
+		}
+		else if (nWatchListSelected <1) // Else if the symbol is not found in Watchlist, add into WatchList and select
+		{
+			rowInfoArr[i].Unselect();
+			if(Is_Port_Loaded(FixedMWPort()))
+			{
+				Add_Symbol_Buy(FixedMWPort(), rowInfoArr[i].GetSymbol(), 0);
+			}
+			else
+			{
+				Pop_Msg("Error: WatchList not Loaded!");
+				return false;
+			}
+			int nWatchListCreated = MainGetRows(rowInfoArr[i].GetSymbol(), FixedMWPort(), tmpRowInfoArr);
+			if (nWatchListCreated >0)
+			{
+				tmpRowInfoArr[0].Select();
+			}
+			bSelectedOutOfWL = true;
+		}
+	}	
+}
+
+// If rows are selected out of WatchList, show the WatchList and bring up the ladder
+if (bSelectedOutOfWL)
+{
+	Run_Cmd("menu rf");
+	Filter_String("PORTFOLIO",FixedMWPort());
+	RunRule(L2_LAUNCH);
+	Filter_String("PORTFOLIO","");
+	Filter_String("ASSIGN_TRDR",TraderName());
+}
+else // Else bring the ladder directly from the WatchList
+{
+	RunRule(L2_LAUNCH);
+}
+
+return true;
+
+
+_END_FORM_ *****************************************

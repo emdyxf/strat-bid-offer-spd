@@ -1,0 +1,116 @@
+_STRT_NEW_FORM_ 1 BO_SET_OINFO_TIME 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:BO_SET_OINFO_TIME
+/***************************************************
+Strat Rule. Convert Epoch time to excel readable time.
+**************************************************/
+
+double dblOrderTime;
+FTStr strHHMMSS, strOrderTime;
+
+Get_Column_Value("ORD_TIME",dblOrderTime);
+strOrderTime = dblOrderTime;
+time_t now = atof(strOrderTime);
+
+struct tm* nowTime = localtime(&now);
+int hour = nowTime->tm_hour;
+int min = nowTime->tm_min;
+int sec = nowTime->tm_sec;
+
+if(hour<10)
+{
+	strHHMMSS = "0";
+	strHHMMSS += hour;
+}
+else
+{
+	strHHMMSS = hour;
+}
+
+strHHMMSS += ":";
+
+if(min < 10)
+{
+	strHHMMSS += "0";
+	strHHMMSS += min;
+}
+else
+{
+	strHHMMSS += min;
+}
+
+strHHMMSS += ":";
+
+if(sec<10)
+{
+	strHHMMSS += "0";
+	strHHMMSS += sec;
+}
+else
+{
+	strHHMMSS += sec;
+}
+	
+// Set String ORDER_SENT_TIME for Export to work
+Set_Column_Str("ORDER_SENT_TIME",strHHMMSS.str());
+
+double dblLastFillTime;
+FTStr  strFillTime;
+
+Get_Column_Value_Else("FILL_TIME",dblLastFillTime, 0.0);
+strFillTime = dblLastFillTime;
+Pop_Msg1(strFillTime);
+
+if (dblLastFillTime < g_dEpsilon)
+{
+	Set_Column_Str("LAST_FILLED_TIME","");
+}
+else
+{
+	time_t tFill = atof(strFillTime);
+
+	struct tm* fillTime = localtime(&tFill);
+	int fillhour = fillTime->tm_hour;
+	int fillmin = fillTime->tm_min;
+	int fillsec = fillTime->tm_sec;
+
+	if(fillhour<10)
+	{
+		strHHMMSS = "0";
+		strHHMMSS += fillhour;
+	}
+	else
+	{
+		strHHMMSS = fillhour;
+	}
+
+	strHHMMSS += ":";
+
+	if(fillmin < 10)
+	{
+		strHHMMSS += "0";
+		strHHMMSS += fillmin;
+	}
+	else
+	{
+		strHHMMSS += fillmin;
+	}
+
+	strHHMMSS += ":";
+
+	if(fillsec<10)
+	{
+		strHHMMSS += "0";
+		strHHMMSS += fillsec;
+	}
+	else
+	{
+		strHHMMSS += fillsec;
+	}
+		
+	// Set String ORDER_SENT_TIME for Export to work
+	Set_Column_Str("LAST_FILLED_TIME",strHHMMSS.str());
+}
+
+return true;
+
+
+_END_FORM_ *****************************************

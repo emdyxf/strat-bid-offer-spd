@@ -1,0 +1,118 @@
+_STRT_NEW_FORM_ 1 BO_STRAT_SEND_RPL 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:BO_STRAT_SEND_RPL
+/***************************************************
+BO Strat Rule. Get all active orders and replace with correct running flag
+**************************************************/
+
+FT_ORDER_INFO oinfo;
+
+FTStr szInstruction;
+Get_param_str(szInstruction.str(),0);
+Set_param_str("",0);
+
+FTStr msgTmp; 
+
+/*
+if(ACKS_PENDING || BUY_LEAVES==0 || SELL_LEAVES==0)
+{
+	msgTmp="[";msgTmp+=PORTFOLIO;msgTmp+="][";msgTmp+=SYM;msgTmp+="]:";
+	if(ACKS_PENDING)
+	{
+		msgTmp+="ACKS_PENDING=[";msgTmp+=ACKS_PENDING;msgTmp+="]!";
+	}
+	else if(BUY_LEAVES)
+	{
+		msgTmp+="BUY_LEAVES=0!";
+	}
+	else
+	{
+		msgTmp+="SELL_LEAVES=0!";
+	}
+	Pop_Msg1(msgTmp);
+	return false;
+}
+*/
+
+if(BUY_LEAVES==0 || SELL_LEAVES==0)
+{
+	msgTmp="[";msgTmp+=PORTFOLIO;msgTmp+="][";msgTmp+=SYM;msgTmp+="]:";
+	if(BUY_LEAVES)
+	{
+		msgTmp+="BUY_LEAVES=0!";
+	}
+	else
+	{
+		msgTmp+="SELL_LEAVES=0!";
+	}
+	Pop_Msg1(msgTmp);
+	return false;
+}
+
+int nMaxPos = (int)Value_Cell_Else("BO_MAXPOS", 0);
+int nPosMult = GlobalValue("POS_MULTIPLIER");
+int nTotalOrdQty = nMaxPos * nPosMult;
+if (nTotalOrdQty <= 0)
+{
+	if (!strcmp(szInstruction.str(), "STOP"))
+		Pop_Msg_Color("Invalid TotalQty. Cannot stop client orders!",0,"red","black");
+	else if (!strcmp(szInstruction.str(), "RESTART"))
+		Pop_Msg_Color("Invalid TotalQty. Cannot restart client orders!",0,"red","black");
+}
+
+int nStratId = (int) Value_Cell_Else("BO_STRATID", 0);
+
+if (!strcmp(szInstruction.str(), "STOP"))
+{
+	Set_Column_Value_Save("BO_RUNNING", 0);
+}
+else if (!strcmp(szInstruction.str(), "RESTART"))
+{
+	Set_Column_Value_Save("BO_RUNNING", 1);
+}
+else
+{
+	Pop_Msg_Color("Invalid Instructions. Cannot modify client orders!",0,"red","black");
+	return false;
+}
+
+// Replace buy orders, with Price as BidSpread
+int iBOrders = Get_Buy_Active_Orders(oinfo);
+double dBidSpd = Value_Cell_Else("BO_BIDSPD", 0.0);
+
+msgTmp="Buy orders = "; msgTmp+=iBOrders;
+Pop_Msg(msgTmp);
+
+for(int i = 0; i < iBOrders; i++)
+{
+	if(nStratId == oinfo.ClientId(i))
+	{
+		if(dBidSpd < g_dEpsilon)	{	Set_Order_Price(-dBidSpd);	}
+		else						{	Set_Order_Price(dBidSpd);	}
+		Set_Order_Dest(ALGO_DEST);
+		Set_Order_Rpl_Shares(nTotalOrdQty);
+		Auto_Replace_Order_Size(i,oinfo,NO_CONFIRM,nStratId,1);
+	}
+}
+
+// Replace sell orders, with Price as OfferSpread
+int iSOrders = Get_Sell_Active_Orders(oinfo);
+double dOfferSpd = Value_Cell_Else("BO_OFFERSPD", 0.0);
+
+msgTmp="Sell orders = "; msgTmp+=iSOrders;
+Pop_Msg(msgTmp);
+
+for(int i = 0; i < iSOrders; i++)
+{
+	if(nStratId == oinfo.ClientId(i))
+	{
+		if(dOfferSpd < g_dEpsilon)	{	Set_Order_Price(-dOfferSpd);	}
+		else						{	Set_Order_Price(dOfferSpd);		}
+		Set_Order_Dest(ALGO_DEST);
+		Set_Order_Rpl_Shares(nTotalOrdQty);
+		Auto_Replace_Order_Size(i,oinfo,NO_CONFIRM,nStratId,1);
+	}
+}	
+
+return true;
+
+
+_END_FORM_ *****************************************

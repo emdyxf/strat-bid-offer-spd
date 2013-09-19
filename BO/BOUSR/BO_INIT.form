@@ -1,0 +1,25 @@
+_STRT_NEW_FORM_ 1 BO_INIT 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:BO_INIT
+/***************************************************
+BO Strat Rule. Set tab orders on the dialog
+**************************************************/
+
+DlgSetTabOrder("symbolOption1", 1);
+DlgSetTabOrder("symbolOption2", 2);
+DlgSetTabOrder("ctlBidBench", 3);
+DlgSetTabOrder("ctlOfferBench", 4);
+DlgSetTabOrder("Refresh", 5);
+DlgSetTabOrder("ctlQuoteMode", 6);
+
+DlgSetTabOrder("ctlOrdLot", 7);
+DlgSetTabOrder("ctlStageCount", 8);
+DlgSetTabOrder("ctlSpreadInterval",9);
+DlgSetTabOrder("StratName", 10);
+DlgSetTabOrder("ctlPayUpTicks",11);
+DlgSetTabOrder("cltMaxRpl", 12);
+DlgSetTabOrder("ctlMaxPos", 13);
+DlgSetTabOrder("ctlMaxLoss", 14);
+
+return true;
+
+
+_END_FORM_ *****************************************

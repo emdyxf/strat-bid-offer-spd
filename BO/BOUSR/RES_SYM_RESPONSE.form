@@ -1,0 +1,113 @@
+_STRT_NEW_FORM_ 1 RES_SYM_RESPONSE 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:RES_SYM_RESPONSE
+/***************************************************
+Reserved Rule. Respond to Sym Commands
+**************************************************/
+
+Pop_Msg("RULE: RES_SYM_RESPONSE!");
+   
+CServerCommand command;
+GetCommandInfo(command);
+
+// get command name
+char szName[128]="";
+command.GetCommandName(szName, sizeof(szName));
+
+// get topic
+char szTopic[128]="";
+command.GetParam("TOPIC", szTopic, 128);
+
+int nStratId = command.GetParam("STRATID", 0);
+
+char szQuoteSym[32]="", szHedgeSym[32]="";
+command.GetParam("QUOTESYM", szQuoteSym, 32);
+command.GetParam("HEDGESYM", szHedgeSym, 32);
+
+int nActive = command.GetParam("ACTIVE", 0);
+int nQuoteRpl = command.GetParam("QUOTERPL", 0);
+int nHedgeRpl = command.GetParam("HEDGERPL", 0);
+
+int nQuoteBotQty = command.GetParam("QUOTEBOTQTY",0);
+double dblQuoteBotAvg = command.GetParam("QUOTEBOTAVG",0.0);
+int nQuoteSoldQty = command.GetParam("QUOTESOLDQTY", 0);
+double dblQuoteSoldAvg = command.GetParam("QUOTESOLDAVG", 0.0);
+double dblQuoteBid = command.GetParam("QUOTEBID", 0.0);
+double dblQuoteAsk = command.GetParam("QUOTEASK", 0.0);
+double dblQuoteMid = command.GetParam("QUOTEMID", 0.0);
+double dblQuoteLoss = command.GetParam("QUOTELOSS", 0.0);
+
+int nHedgeBotQty = command.GetParam("HEDGEBOTQTY", 0);
+double dblHedgeBotAvg = command.GetParam("HEDGEBOTAVG", 0.0);
+int nHedgeSoldQty = command.GetParam("HEDGESOLDQTY", 0);
+double dblHedgeSoldAvg = command.GetParam("HEDGESOLDAVG", 0.0);
+double dblHedgeBid = command.GetParam("HEDGEBID", 0.0);
+double dblHedgeAsk = command.GetParam("HEDGEASK", 0.0);
+double dblHedgeMid = command.GetParam("HEDGEMID", 0.0);
+double dblHedgeLoss = command.GetParam("HEDGELOSS", 0.0);
+
+char szTime[128]="";
+command.GetParam("TIME", szTime, 128);
+
+char szMsg[512]="";
+//sprintf(szMsg, "CMD : %s TOPIC : %s TIME : %d ORDID : %s", szName, szTopic, now, szStrat);
+sprintf(szMsg, "CMD:%s | TOPIC:%s | StratId:%d | Quote:%s | Hedge:%s | Active:%d | QuoteRpl:%d | HedgeRpl:%d | Time:%s", 
+				szName,szTopic,nStratId,szQuoteSym,szHedgeSym,nActive,nQuoteRpl,nHedgeRpl,szTime);
+Pop_Msg(szMsg);
+
+// Handle RPL Count
+Set_param_val((double)nQuoteRpl,0);
+Set_param_val((double)nHedgeRpl,1);
+Set_param_val((double)nActive,2);
+Set_param_str(szTopic,0);
+	
+RunRule(BO_RPL_COUNT);
+
+Set_param_val(0.0,0);
+Set_param_val(0.0,1);
+Set_param_val(0.0,2);
+Set_param_str("",0);
+
+// Handle Max_Loss
+if (nActive != 1)
+{
+	sprintf(szMsg, "CMD:%s | TOPIC:%s | StratId:%d | Quote:%s Loss:%0.2f | Bot[%d] @ Avg[%0.2f] | Sold[%d] @ Avg [%0.2f] | Bid[%0.2f]/Ask[%0.2f]/Mid[%0.2f] | Time:%s", 
+				szName,szTopic,nStratId,szQuoteSym,dblQuoteLoss,nQuoteBotQty,dblQuoteBotAvg,nQuoteSoldQty,dblQuoteSoldAvg,dblQuoteBid,dblQuoteAsk,dblQuoteMid,szTime);
+	Pop_Msg(szMsg);
+
+	sprintf(szMsg, "CMD:%s | TOPIC:%s | StratId:%d | Hedge:%s Loss:%0.2f | Bot[%d] @ Avg[%0.2f] | Sold[%d] @ Avg [%0.2f] | Bid[%0.2f]/Ask[%0.2f]/Mid[%0.2f] | Time:%s", 
+				szName,szTopic,nStratId,szHedgeSym,dblHedgeLoss,nHedgeBotQty,dblHedgeBotAvg,nHedgeSoldQty,dblHedgeSoldAvg,dblHedgeBid,dblHedgeAsk,dblHedgeMid,szTime);
+	Pop_Msg(szMsg);
+	
+	Set_param_str(szTopic,0);
+	Set_param_val(dblQuoteLoss,0);
+	Set_param_val(dblHedgeLoss,1);
+	Set_param_val((double)nActive,2);
+
+	bool bIsMaxLossBreached = RunRule(BO_MAXLOSS_STOP);
+	if (bIsMaxLossBreached)
+	{
+		sprintf(szMsg, "StratId:%d | Quote:%s Loss:%0.2f | Bot[%d] @ Avg[%0.2f] | Sold[%d] @ Avg [%0.2f] | Bid[%0.2f]/Ask[%0.2f]/Mid[%0.2f] | Time:%s", 
+				nStratId,szQuoteSym,dblQuoteLoss,nQuoteBotQty,dblQuoteBotAvg,nQuoteSoldQty,dblQuoteSoldAvg,dblQuoteBid,dblQuoteAsk,dblQuoteMid,szTime);
+	
+		Pop_Msg_Color(szMsg, 0, "red", "black");
+	
+		sprintf(szMsg, "StratId:%d | Hedge:%s Loss:%0.2f | Bot[%d] @ Avg[%0.2f] | Sold[%d] @ Avg [%0.2f] | Bid[%0.2f]/Ask[%0.2f]/Mid[%0.2f] | Time:%s", 
+				nStratId,szHedgeSym,dblHedgeLoss,nHedgeBotQty,dblHedgeBotAvg,nHedgeSoldQty,dblHedgeSoldAvg,dblHedgeBid,dblHedgeAsk,dblHedgeMid,szTime);
+		
+		Pop_Msg_Color(szMsg, 0, "red", "black");
+			
+		MsgBox("Strategy Stopped", "MaxLoss Breached!", 'E');
+	}
+
+	Set_param_val(0.0,0);
+	Set_param_val(0.0,1);
+	Set_param_val(0.0,2);
+	Set_param_str("",0);
+	
+}
+	
+return true;
+
+//--end rule--
+
+
+_END_FORM_ *****************************************
