@@ -151,7 +151,18 @@ if (strstr(BOStratPort, FLEX_OMRULE_BO_SPD)) // If BO_PORT contains FLEX_OMRULE_
 	}
 	szBuffer= (int)dBuffer;
 	Set_FixTag_Str(FIX_TAG_RUNNING_BO, szBuffer.str());
-	
+
+	FTStr msgSub; msgSub="VALID_RPL: Subcribing "; msgSub+=BOStratPort;
+	Pop_Msg(msgSub);
+
+	CServerCommand cmd;
+	cmd.SetCommandName("SUBSCRIBE");
+	cmd.SetParam("TOPIC",BOStratPort);
+	cmd.SymSendCommand();
+
+	msgSub="VALID_RPL: Sent Subscription for "; msgSub+=BOStratPort;
+	Pop_Msg(msgSub);
+
 	Set_Send_Order_Dest(ALGO_DEST);
 }
 else // If NO Strat Port -> Replace is not allowed at SHFE

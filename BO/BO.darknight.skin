@@ -11,8 +11,8 @@ Font:Selected:Custom
 Font:Custom:Tahoma  9
 Spacing:Row:1
 Spacing:Column:1
-UnsubscribedRows:Foreground:#EEEEEE
 UnsubscribedRows:Background:#000000
+UnsubscribedRows:Foreground:#EEEEEE
 Combo:Foreground:#FFFFFF
 Combo:Background:#292929
 Sell:Foreground:#F1A3A5
@@ -20,8 +20,8 @@ Sell:Background:#292929
 Colors:Extend:0
 SellShort:Foreground:#FB6462
 SellShort:Background:#292929
-Summary:Background:#000000
 Summary:Foreground:#F5F5F5
+Summary:Background:#000000
 Style:Style:flextrdr_darknight
 Foreground:Foreground:#FFFFFF
 Shading:Shading:5

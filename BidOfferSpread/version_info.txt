@@ -1,3 +1,7 @@
+PROJ_BO_v2.5.05.20130920
+- Fixed: Hedge leg order at staging to be sent at correct spread
+- Fixed: Re-subscribe to strategy cancel count upon strat control
+
 PROJ_BO_v2.5.04.20130911
 - Fixed: To cater for pend-cxl/mkt-data race condition, auto cancelling to account for pending-cxl/pending-rpl orders, 
 

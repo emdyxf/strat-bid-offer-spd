@@ -2775,23 +2775,10 @@ int	BidOfferSpread::HandleQuoteUponMarketData (StratParams* pStratParams, MTICK&
 			{
 				do
 				{
-/*
-					if (HandleSHFEReplace(ExistingStreetOrder, nNewOrderQty, dQuotePrice)==SUCCESS)
-					{
-						_STRAT_LOG_DBUG_(CDEBUG	<< "StratID [" << pStratParams->nStratId
-												<< "] : Increasing QuoteRplCount from [" << pStratParams->nQuoteRplCount
-												<< "] to [ " << (pStratParams->nQuoteRplCount+1)
-												<< "]"
-												<< std::endl);
-
-						pStratParams->nQuoteRplCount++;
-					}
-*/
 					HandleSHFEReplace(ExistingStreetOrder, nNewOrderQty, dQuotePrice);
 
 					PublishStratStatus(pStratParams);
 				}
-//				while(ReplaceRiskLimitControl(QuoteOrder) == SUCCESSSOrdContainer.GetNextActiveByClientOrderId(ExistingStreetOrder));
 				while((ReplaceRiskLimitControl(QuoteOrder) == SUCCESS)
 						&& (SOrdContainer.GetNextActiveByClientOrderId(ExistingStreetOrder)));
 			}
@@ -3104,7 +3091,8 @@ double BidOfferSpread::GetStratHedgePrice (StratParams* pStratParams, double dDr
 		return dHedgePrice;
 	}
 
-	dBenchmark = bBidHedge? GetOfferingBenchmark(pStratParams) : GetBiddingBenchmark(pStratParams);
+//	dBenchmark = bBidHedge? GetOfferingBenchmark(pStratParams) : GetBiddingBenchmark(pStratParams);
+	dBenchmark = bBidHedge? pStratParams->dStateOfferBench :  pStratParams->dStateBidBench;
 
 	int nBenchTicks = int (dBenchmark / dTickSizeHedge);
 
