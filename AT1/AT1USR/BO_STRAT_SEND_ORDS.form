@@ -1,0 +1,63 @@
+_STRT_NEW_FORM_ 1 BO_STRAT_SEND_ORDS 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:BO_STRAT_SEND_ORDS
+/***************************************************
+BO Strat Rule. Send out one buy client order and one sell client order
+**************************************************/
+
+if(ACKS_PENDING || BUY_LEAVES || SELL_LEAVES)
+{
+	if(ACKS_PENDING)
+	{
+		Pop_Msg1("ACKS_PENDING");
+	}
+	else if(BUY_LEAVES)
+	{
+		Pop_Msg1("BUY_LEAVES");
+	}
+	else
+	{
+		Pop_Msg1("SELL_LEAVES");	
+	}
+	return false;
+}	
+
+int nMaxPos = (int)Value_Cell_Else("BO_MAXPOS", 0);
+int nPosMult = GlobalValue("POS_MULTIPLIER");
+int nTotalOrdQty = nMaxPos * nPosMult;
+if (nTotalOrdQty <= 0)
+{
+	Pop_Msg_Color("Invalid TotalQty. Cannot send client orders!",0,"red","black");
+	return false;
+}
+Set_Order_Shares(nTotalOrdQty);
+
+int nStratId = (int) Value_Cell_Else("BO_STRATID", 0);
+
+Set_Column_Value_Save("BO_RUNNING", 1);
+
+// Send a buy order, with Price as BidSpread
+Set_Order_Side_Buy();
+double dBidSpd = Value_Cell_Else("BO_BIDSPD", g_dEpsilon/10.0);
+
+if (fabs(dBidSpd) < g_dEpsilon) {	dBidSpd = g_dEpsilon;}
+
+if(dBidSpd < -g_dEpsilon)	{	Set_Order_Price(-dBidSpd);	}
+else						{	Set_Order_Price(dBidSpd);	}
+Set_Order_Price(1000);	//@rafae for can not set price equal 0
+Auto_Send_Order(NO_CONFIRM, nStratId);	
+
+// Send a sell order, with Price as OfferSpread
+Set_Order_Side_Sell();
+double dOfferSpd = Value_Cell_Else("BO_OFFERSPD", g_dEpsilon/10.0);
+
+if (fabs(dOfferSpd) < g_dEpsilon) {	dOfferSpd = g_dEpsilon;	 }
+
+if(dOfferSpd < -g_dEpsilon)	{	Set_Order_Price(-dOfferSpd);	}
+else						{	Set_Order_Price(dOfferSpd);		}
+
+Set_Order_Price(1000); //@rafae for can not set price equal 0
+Auto_Send_Order(NO_CONFIRM, nStratId);
+
+return true;
+
+
+_END_FORM_ *****************************************

@@ -1,0 +1,192 @@
+_STRT_NEW_FORM_ 1 BO_EXECS 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:BO_EXECS
+/***************************************************
+Strat Rule. Runs whenever we get a fill. Updates information on the executed shares relating to the spread.
+**************************************************/
+
+const char szRule[DEF_STR_LEN] = "BO_EXECS:";
+
+FTStr szLeg, szStratSym, szStratPort;
+FTStr symQuote, symHedge;
+FTStr msgDebug;
+double dBotAvgQuote=0.0, dBotAvgHedge=0.0, dSoldAvgQuote=0.0, dSoldAvgHedge=0.0;
+double dBotValQuote=0.0, dBotValHedge=0.0, dSoldValQuote=0.0, dSoldValHedge=0.0;
+double dBotQtyQuote=0.0, dBotQtyHedge=0.0, dSoldQtyQuote=0.0, dSoldQtyHedge=0.0;
+double dStratId=0.0;
+
+Get_Column_Str("BO_PORT", szStratPort.str());
+Pop_Msg1(szStratPort);
+if (!strstr(szStratPort.str(), FLEX_OMRULE_BO_SPD) && !strstr(szStratPort.str(), FLEX_OMRULE_BOAD_SPD ))  //@rafael for adjustment
+{
+	//Pop_Msg("BO_EXEC: Skip -> Not a Strat Row!"); 
+	return false;
+}
+
+Get_Column_Str("BO_LEG", szLeg.str());
+
+FlexAppRules::RowInfoArray aRows;
+int nStratRow = MainGetRows(NULL, szStratPort.str(), aRows);
+
+if (nStratRow == 2)
+{
+	if(!strcmp(aRows[0].GetSymbol(), SYM))
+	{
+		szStratSym = aRows[1].GetSymbol();
+	}
+	else
+	{
+		szStratSym = aRows[0].GetSymbol();
+	}
+}
+else
+{
+	Pop_Msg("BO_EXECS: Failed to get 2 rows!");
+	return false;
+}
+
+if (!strcmp(szLeg.str(), LEG_QUOTE))
+{
+	dBotAvgQuote = BUY_APR;
+	dSoldAvgQuote = SELL_APR;
+	dBotValQuote = BUY_EXEC_VAL;
+	dSoldValQuote = SELL_EXEC_VAL;
+	dBotQtyQuote = BUY_EXEC_SHRS;
+	dSoldQtyQuote = SELL_EXEC_SHRS;
+	
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "BUY_APR", dBotAvgHedge, 0.0);
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "SELL_APR", dSoldAvgHedge, 0.0);
+	
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "BUY_EXEC_VAL", dBotValHedge, 0.0);
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "SELL_EXEC_VAL", dSoldValHedge, 0.0);
+	
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "BUY_EXEC_SHRS", dBotQtyHedge, 0.0);
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "SELL_EXEC_SHRS", dSoldQtyHedge, 0.0);
+
+	symQuote = SYM;
+	symHedge = szStratSym;
+	
+}
+else if (!strcmp(szLeg.str(), LEG_HEDGE))
+{
+	dBotAvgHedge = BUY_APR;
+	dSoldAvgHedge = SELL_APR;
+	dBotValHedge = BUY_EXEC_VAL;
+	dSoldValHedge = SELL_EXEC_VAL;
+	dBotQtyHedge = BUY_EXEC_SHRS;
+	dSoldQtyHedge = SELL_EXEC_SHRS;
+
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "BUY_APR", dBotAvgQuote, 0.0);
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "SELL_APR", dSoldAvgQuote, 0.0);
+	
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "BUY_EXEC_VAL", dBotValQuote, 0.0);
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "SELL_EXEC_VAL", dSoldValQuote, 0.0);
+	
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "BUY_EXEC_SHRS", dBotQtyQuote, 0.0);
+	Get_Port_Sym_Column_Value_Else(szStratPort.str(), szStratSym.str(), "SELL_EXEC_SHRS", dSoldQtyQuote, 0.0);
+	
+	symHedge = SYM;
+	symQuote = szStratSym;
+	
+}
+else
+{
+	Pop_Msg("BO_EXECS: Failed to match LegID!");
+	return false;
+}
+
+FTStr msgValue=""; msgValue+=szRule; msgValue+=szStratPort; msgValue+=" ["; msgValue+=symQuote; msgValue+="]";
+msgValue+=" dBotAvgQuote=";
+msgValue+=dBotAvgQuote;
+msgValue+=" dBotValQuote=";
+msgValue+=dBotValQuote;
+msgValue+=" dBotQtyQuote=";
+msgValue+=dBotQtyQuote;
+msgValue+=" dSoldAvgQuote=";
+msgValue+=dSoldAvgQuote;
+msgValue+=" dSoldValQuote=";
+msgValue+=dSoldValQuote;
+msgValue+=" dSoldQtyQuote=";
+msgValue+=dSoldQtyQuote;
+
+Pop_Msg(msgValue);
+
+msgValue=""; msgValue+=szRule; msgValue+=szStratPort; msgValue+=" ["; msgValue+=symHedge; msgValue+="]";
+msgValue+=" dBotAvgHedge=";
+msgValue+=dBotAvgHedge;
+msgValue+=" dBotValHedge=";
+msgValue+=dBotValHedge;
+msgValue+=" dBotQtyHedge=";
+msgValue+=dBotQtyHedge;
+msgValue+=" dSoldAvgHedge=";
+msgValue+=dSoldAvgHedge;
+msgValue+=" dSoldValHedge=";
+msgValue+=dSoldValHedge;
+msgValue+=" dSoldQtyHedge=";
+msgValue+=dSoldQtyHedge;
+
+Pop_Msg(msgValue);
+
+// Update execs info of the individual row
+
+double dExecSpread=0.0;
+dExecSpread = SELL_APR - BUY_APR;
+Set_Column_Value_Save("CONTRACT_SPD", dExecSpread);
+
+double dExecPos=0.0;
+dExecPos=BUY_EXEC_SHRS-SELL_EXEC_SHRS;
+Set_Column_Value_Save("CONTRACT_POS", dExecPos);
+
+double exec_pnl=0.0, dUnitPrice=0.0;
+dUnitPrice = GetContractUnitPriceForSymbol(SYM);
+exec_pnl = (SELL_EXEC_VAL-BUY_EXEC_VAL) * dUnitPrice;
+Set_Column_Value_Save("CONTRACT_PNL", exec_pnl);
+
+// Update exexs info of the strat
+
+// Update Positions
+int nNetPos = 0;
+nNetPos = dBotQtyQuote - dSoldQtyQuote + dBotQtyHedge - dSoldQtyHedge;
+
+Set_Column_Value_Save("STRAT_POS", double(nNetPos));
+Set_Column_Value_Save("STRAT_POS_GRP", double(nNetPos/2.0));
+Set_Port_Sym_Column_Value_Save(szStratPort.str(),szStratSym.str(), "STRAT_POS", double(nNetPos));
+Set_Port_Sym_Column_Value_Save(szStratPort.str(),szStratSym.str(), "STRAT_POS_GRP", double(nNetPos/2.0));
+
+// Update Max Loss
+double dStratPnL=0.0;
+
+MarketInfo minfoQuote(symQuote), minfoHedge(symHedge);
+
+double quoteBid=0.0, quoteAsk=0.0, hedgeBid=0.0, hedgeAsk=0.0, dMidQuote=0.0, dMidHedge=0.0;
+double dNetLossQuote=0.0, dNetLossHedge=0.0, dNetLoss=0.0;
+
+quoteBid = minfoQuote.GetBid();
+quoteAsk = minfoQuote.GetAsk();
+hedgeBid = minfoHedge.GetBid();
+hedgeAsk = minfoHedge.GetAsk();
+	
+dMidQuote = (quoteBid + quoteAsk)/2.0;
+dMidHedge = (hedgeBid + hedgeAsk)/2.0;
+
+dNetLossQuote = dUnitPrice * (dBotQtyQuote * (dBotAvgQuote - dMidQuote)
+					+ dSoldQtyQuote * (dMidQuote - dSoldAvgQuote ));
+
+dNetLossHedge = dUnitPrice * (dBotQtyHedge * (dBotAvgHedge - dMidHedge)
+						+ dSoldQtyHedge * (dMidHedge - dSoldAvgHedge));
+
+dNetLoss = dNetLossQuote + dNetLossHedge;
+dStratPnL = - dNetLoss;
+
+Set_Column_Value_Save("NET_LOSS", dNetLoss);
+Set_Column_Value_Save("BO_PNL", dStratPnL);
+Set_Port_Sym_Column_Value_Save(szStratPort.str(),szStratSym.str(), "NET_LOSS", dNetLoss);
+Set_Port_Sym_Column_Value_Save(szStratPort.str(),szStratSym.str(), "BO_PNL", dStratPnL);
+
+Set_Column_Value_Save("NET_LOSS_GRP", dNetLoss/2.0);
+Set_Column_Value_Save("BO_PNL_GRP", dStratPnL/2.0);
+Set_Port_Sym_Column_Value_Save(szStratPort.str(),szStratSym.str(), "NET_LOSS_GRP", dNetLoss/2.0);
+Set_Port_Sym_Column_Value_Save(szStratPort.str(),szStratSym.str(), "BO_PNL_GRP", dStratPnL/2.0);
+
+return true;
+
+
+_END_FORM_ *****************************************

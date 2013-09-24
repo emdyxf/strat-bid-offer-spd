@@ -1,0 +1,22 @@
+_STRT_NEW_FORM_ 1 BO_LOAD_SYM_QUOTE 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:BO_LOAD_SYM_QUOTE
+/***************************************************
+BO Strat Rule. Load information of quote symbol 
+**************************************************/
+
+FTStr sym, symQuote, lotQuote;
+symQuote = "";
+
+DlgGetControlValue("symbolOption1", sym.str());
+symQuote += sym;
+
+DlgSetControlValue("paraSymQuote", symQuote.str());
+
+int nlotQuote = GetSymbolLotSize(symQuote);
+lotQuote = nlotQuote;
+
+DlgSetControlValue("LotSizeQuote",lotQuote.str());
+
+return true;
+
+
+_END_FORM_ *****************************************

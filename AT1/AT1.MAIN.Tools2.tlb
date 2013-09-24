@@ -1,0 +1,80 @@
+widget:label
+Name:
+Label:~|| BId-Offer Spread Adjustment |
+script:
+foreground:#FFFFFF
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:T2BtnCreateStrategy
+Label:~ADD
+script:o BOAD_SHOW_DIALOG BO_SPD_ADJUST ADD
+foreground:#FFFFFF
+background:#99A7D8
+__END__
+__EndCfg
+widget:button
+Name:T2BtnEditStrategy
+Label:~EDIT 
+script:o BOAD_SHOW_DIALOG BO_SPD_ADJUST EDIT
+foreground:#FFFFFF
+background:#99A7D8
+__END__
+__EndCfg
+widget:label
+Name:
+Label:~ | 
+script:
+foreground:#FFFFFF
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:T2BtnCancelStrategy
+Label:~ CXL 
+script:o BOAD_STRAT_CONTROL CANCEL
+foreground:#FFFFFF
+background:#D899A9
+__END__
+__EndCfg
+widget:label
+Name:
+Label:~ | 
+script:
+foreground:#FFFFFF
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:T2BtnStart
+Label:Icons/play.png~
+script:o BOAD_STRAT_CONTROL START
+foreground:#FFFFFF
+background:#C4E5D0
+__END__
+__EndCfg
+widget:button
+Name:T2BtnStopOne
+Label:Icons/stop.png~
+script: o BOAD_STRAT_CONTROL STOP
+foreground:#FFFFFF
+background:#F6E3E3
+__END__
+__EndCfg
+widget:label
+Name:
+Label:~ | 
+script:
+foreground:#FFFFFF
+background:#292929
+__END__
+__EndCfg
+widget:button
+Name:T2BtnStopAll
+Label:Icons/stop_all.png~
+script:o BOAD_STRAT_CONTROL CANCELALL
+foreground:#FFFFFF
+background:#BC8B3B
+__END__
+__EndCfg

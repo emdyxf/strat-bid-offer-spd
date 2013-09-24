@@ -1,0 +1,640 @@
+_STRT_NEW_FORM_ 1 BOAD_BID_OFFER_DLG 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:BOAD_BID_OFFER_DLG
+/***************************************************
+BO Strat Rule. Manage bid-offer strategy dialog
+**************************************************/
+
+char szParam[32] = "";
+Get_param_str(szParam, 0);
+
+Pop_Msg1(szParam);
+
+FTStr strRuleName="[BOAD_BID_OFFER_DLG]: ";
+FTStr strRuleLog="";
+
+/*
+ * Expected Parameters
+ * LOAD		: [L] When the Dialog is loaded
+ * PRODUCT	: [E] When any of the product is updated
+ * REFRESH	: [R] Refresh Benchmarks
+ * QTY		: [Q] Update Order Size
+ * CONFIRM	: [C] Build Strategy upon clicking "OK"
+ * cancel	: [c] Close dialog upon clicking "CANCEL"
+*/
+ 
+if(szParam[0] == 'L')// LOAD
+{
+	if(IsStratInEditMode)
+	{
+		static ColumnInfo clBoLeg("BO_LEG"), clStratName("STRAT_NAME"), clBoPort("BO_PORT"), clStratId("BO_STRATID"), clStratMode("BO_MODE");
+		static ColumnInfo clBoStatus("BO_STATUS"), clBoBidSpd("BO_BIDSPD"), clBoOfferSpd("BO_OFFERSPD"), clLotSize("BO_LOTSIZE");
+		static ColumnInfo clBoOrdSize("BO_ORDSIZE"), clBoQrdQty("BO_ORDQTY"), clBoStgCnt("BO_STGCNT"), clBoSpdInt("BO_SPDINT");
+		static ColumnInfo clBoPayUpTicks("BO_PAYUPTICK"), clBoMaxRpl("BO_MAXRPL"), clBoMaxPos("BO_MAXPOS"), clBoMaxLoss("BO_MAXLOSS");
+	
+		static ColumnInfo clBoStgAd("BO_STGAD"),clBoAdInt("BO_ADINT");
+	    static ColumnInfo clBoQuoteMul("BO_QUMUL"),clBoHedgeMul("BO_HEMUL");
+		static ColumnInfo clBoQuoteRa("BO_QURA"),clBoHedgeRa("BO_HERA");
+		
+		DlgSetProperty(NULL,"title","Bid-Offer SPREAD : EDIT");
+		DlgSetProperty("btnOK", "label", "EDIT");
+		
+		FlexAppRules::RowInfo QuoteRow, HedgeRow;
+		FTStr szTemp;
+		int	nTemp;
+		double dTemp;
+		
+		FlexAppRules::RowInfoArray selRows;
+	    int iSelectedRows = MainGetSelectedRows(selRows);
+	    if(iSelectedRows != 2)
+		{
+			MsgBox("PARAMETER EDIT", "edit parameters error", 'E');
+			DlgRunCommand("CLOSE");
+			IsStratInEditMode = false;
+			return true;
+		}
+		selRows[0].GetCellValue(clBoLeg, szTemp);
+		if(!strcmp(szTemp.str(), "QUOTE"))
+		{
+			QuoteRow = selRows[0];
+			HedgeRow = selRows[1];
+		}
+		else
+		{
+			QuoteRow = selRows[1];
+			HedgeRow = selRows[0];
+		}
+	 
+		szTemp = QuoteRow.GetSymbol();
+		DlgSetControlValue("symbolOption1", szTemp.str());
+		
+		szTemp = HedgeRow.GetSymbol();
+		DlgSetControlValue("symbolOption2", szTemp.str());
+		
+		QuoteRow.GetCellValue(clStratName,szTemp);
+		DlgSetControlValue("StratName", szTemp.str());
+		
+		QuoteRow.GetCellValue(clStratMode,szTemp);
+		DlgSetControlValue("ctlQuoteMode", szTemp.str());
+		
+		DlgDisableControl("symbolOption1");
+		DlgDisableControl("symbolOption2");
+		DlgDisableControl("StratName");
+		DlgDisableControl("ctlQuoteMode");
+		
+		int nQuoteLotSize = (int) QuoteRow.GetCellValue(clLotSize, 0.0);
+		szTemp = nQuoteLotSize;
+		DlgSetControlValue("LotSizeQuote", szTemp.str());
+		
+		int nHedgeLotSize = (int) HedgeRow.GetCellValue(clLotSize, 0.0);
+		szTemp = nHedgeLotSize;
+		DlgSetControlValue("LotSizeHedge", szTemp.str());
+		
+		int nOrdLots = (int) QuoteRow.GetCellValue(clBoOrdSize, 0.0);
+		szTemp = nOrdLots;
+		DlgSetControlValue("ctlOrdLot", szTemp.str());
+					
+		FTStr szMinLots, szOrdQty;
+		DlgGetControlValue("MinLotSize", szMinLots.str());
+		int nMinLots = atoi(szMinLots);
+		int nOrdQty = 0;
+		nOrdQty = nOrdLots * nMinLots;
+		szOrdQty = ""; szOrdQty+=nOrdQty;
+		DlgSetControlValue("OrdQtyLots", szOrdQty.str());
+		
+		dTemp = QuoteRow.GetCellValue(clBoStgCnt, 0.0);
+		szTemp = int(dTemp);
+		DlgSetControlValue("ctlStageCount", szTemp.str());
+
+		dTemp = QuoteRow.GetCellValue(clBoSpdInt, 0.0);
+		szTemp = int(dTemp);
+		DlgSetControlValue("ctlSpreadInterval", szTemp.str());
+		
+		dTemp = QuoteRow.GetCellValue(clBoPayUpTicks, 0.0);
+		szTemp = int(dTemp);
+		DlgSetControlValue("ctlPayUpTicks", szTemp.str());	
+		
+		dTemp = QuoteRow.GetCellValue(clBoMaxRpl, 0.0);
+		szTemp = int(dTemp);
+		DlgSetControlValue("cltMaxRpl", szTemp.str());	
+		
+		dTemp = QuoteRow.GetCellValue(clBoMaxPos, 0.0);
+		szTemp = int(dTemp);
+		DlgSetControlValue("ctlMaxPos", szTemp.str());
+		
+		dTemp = QuoteRow.GetCellValue(clBoMaxLoss, 0.0);
+		szTemp = int(dTemp);
+		DlgSetControlValue("ctlMaxLoss", szTemp.str());
+		
+		dTemp = QuoteRow.GetCellValue(clBoBidSpd, 0.0);
+		szTemp = dTemp;
+		DlgSetControlValue("ctlBidBench", szTemp.str());
+
+		dTemp = QuoteRow.GetCellValue(clBoOfferSpd, 0.0);
+		szTemp = dTemp;
+		DlgSetControlValue("ctlOfferBench", szTemp.str());	
+		                              
+		dTemp = QuoteRow.GetCellValue(clBoStgAd, 0.0);
+		szTemp = int(dTemp); 
+		DlgSetControlValue("ctlStageAdjustment", szTemp.str());	 
+		
+		dTemp = QuoteRow.GetCellValue(clBoAdInt, 0.0);
+		szTemp = int(dTemp); 
+		DlgSetControlValue("ctlAdjustmentInterval", szTemp.str());	 
+		
+		dTemp = QuoteRow.GetCellValue(clBoQuoteMul, 0.0);
+		szTemp = int(dTemp); 
+		DlgSetControlValue("ctlQuoteMul", szTemp.str());	 
+		
+		dTemp = QuoteRow.GetCellValue(clBoHedgeMul, 0.0);
+		szTemp = int(dTemp); 
+		DlgSetControlValue("ctlHedgeMul", szTemp.str());	 
+		
+		dTemp = QuoteRow.GetCellValue(clBoQuoteRa, 0.0);
+		szTemp = int(dTemp); 
+		DlgSetControlValue("ctlQuoteRa", szTemp.str());	 
+		
+		dTemp = QuoteRow.GetCellValue(clBoHedgeRa, 0.0);
+		szTemp = int(dTemp); 
+		DlgSetControlValue("ctlHedgeRa", szTemp.str());	
+		
+	}
+	else
+	{
+		//New Strategy Building Mode (Keep it flexible to accomodate both Positive and Opposite operations)
+		static ColumnInfo clBoLeg("BO_LEG");
+		FTStr szTemp;
+		
+		FlexAppRules::RowInfoArray selRows;
+		FlexAppRules::RowInfo QuoteRow, HedgeRow;
+		int nRows = MainGetSelectedRows(selRows);
+		if(nRows ==2)
+		{	
+			if(!strcmp(selRows[0].GetPortfolio(),selRows[1].GetPortfolio()))
+			{
+				if (GetInstrType(selRows[0].GetSymbol()) == GetInstrType(selRows[1].GetSymbol()))
+				{
+				
+					selRows[1].GetCellValue(clBoLeg, szTemp);
+					if(!strcmp(szTemp.str(), "QUOTE"))
+					{
+						QuoteRow = selRows[1];
+						HedgeRow = selRows[0];
+					}
+					else
+					{
+						QuoteRow = selRows[0];
+						HedgeRow = selRows[1];
+					}
+	
+					szTemp = QuoteRow.GetSymbol();
+					DlgSetControlValue("symbolOption1", szTemp.str());
+					
+					szTemp = HedgeRow.GetSymbol();
+					DlgSetControlValue("symbolOption2", szTemp.str());				
+				}
+				else
+				{
+					MsgBox("STRAT from Selected Rows", "Please select two symbols of same underlying", 'E');
+					return false;
+				}
+			}		
+		}
+ 
+		DlgSetProperty(NULL,"title","Bid-Offer SPREAD : BUILD");
+		DlgSetProperty("btnOK", "label", "ADD");
+		
+		DlgSetControlValue("ctlQuoteMode", STRAT_MODE_ALWAYS);
+		//DlgDisableControl("ctlQuoteMode");
+		
+		DlgSetControlValue("ctlOrdLot", "2");
+		DlgSetControlValue("ctlStageCount", "5");
+		DlgSetControlValue("ctlSpreadInterval", "1");
+		DlgSetControlValue("ctlPayUpTicks", "0");	
+		DlgSetControlValue("cltMaxRpl", "0");	
+		DlgSetControlValue("ctlMaxPos", "20");
+		DlgSetControlValue("ctlMaxLoss","5000.0");
+		DlgSetControlValue("ctlBidBench", "0.00");
+		DlgSetControlValue("ctlOfferBench", "0.00");
+		DlgSetControlValue("ctlStageAdjustment","1");
+		DlgSetControlValue("ctlAdjustmentInterval","0");
+		DlgSetControlValue("ctlQuoteMul","1");
+		DlgSetControlValue("ctlHedgeMul","1");
+		DlgSetControlValue("ctlQuoteRa","1");
+		DlgSetControlValue("ctlHedgeRa","1");
+		
+		//int minlot and beanchmark same with exprioty
+		FTStr symQuote, symHedge, szLotQuote, szLotHedge, szMinLot;
+	DlgGetControlValue("symbolOption1", symQuote.str());
+	DlgGetControlValue("symbolOption2", symHedge.str());
+	
+	int nlotVal1 = GetSymbolLotSize(symQuote);
+	int nlotVal2 = GetSymbolLotSize(symHedge);
+	
+	szLotQuote = ""; szLotQuote+=nlotVal1;
+	szLotHedge = ""; szLotHedge+=nlotVal2;
+	DlgSetControlValue("LotSizeQuote", szLotQuote);
+	DlgSetControlValue("LotSizeHedge", szLotHedge);
+	int nMinLot = GetLCM(nlotVal1, nlotVal2);
+	szMinLot=""; szMinLot += nMinLot;
+	DlgSetControlValue("MinLotSize", szMinLot.str());
+	
+	FTStr  szStratMode;
+	DlgGetControlValue("ctlQuoteMode",szStratMode.str());
+		
+	MarketInfo minfoQuote(symQuote), minfoHedge(symHedge);
+	double quoteBid=0.0, quoteAsk=0.0, hedgeBid=0.0, hedgeAsk=0.0, benchBid=0.0, benchOffer=0.0;
+	FTStr szBenchBid, szBenchOffer;
+	quoteBid = minfoQuote.GetBid();
+	quoteAsk = minfoQuote.GetAsk();
+	hedgeBid = minfoHedge.GetBid();
+	hedgeAsk = minfoHedge.GetAsk();
+	
+	if (!strcmp(szStratMode.str(), STRAT_MODE_AGGRESSIVE))
+	{
+		benchBid = quoteAsk - hedgeBid;
+		benchOffer = quoteBid - hedgeAsk;
+	}
+	else
+	{
+		benchBid = quoteBid - hedgeBid;
+		benchOffer = quoteAsk - hedgeAsk;
+	}
+
+	szBenchBid=""; szBenchBid+=benchBid;
+	szBenchOffer=""; szBenchOffer+=benchOffer;
+
+	DlgSetControlValue("ctlBidBench", szBenchBid.str());
+	DlgSetControlValue("ctlOfferBench", szBenchOffer.str());
+		
+	}
+	RunRule(BOAD_INIT);
+}
+
+else if(szParam[0] == 'E')// PRODUCT
+{
+	FTStr symQuote, symHedge, szLotQuote, szLotHedge, szMinLot;
+	DlgGetControlValue("symbolOption1", symQuote.str());
+	DlgGetControlValue("symbolOption2", symHedge.str());
+	
+	int nlotVal1 = GetSymbolLotSize(symQuote);
+	int nlotVal2 = GetSymbolLotSize(symHedge);
+	
+	szLotQuote = ""; szLotQuote+=nlotVal1;
+	szLotHedge = ""; szLotHedge+=nlotVal2;
+	DlgSetControlValue("LotSizeQuote", szLotQuote);
+	DlgSetControlValue("LotSizeHedge", szLotHedge);
+	int nMinLot = GetLCM(nlotVal1, nlotVal2);
+	szMinLot=""; szMinLot += nMinLot;
+	DlgSetControlValue("MinLotSize", szMinLot.str());
+	
+	//Refresh benchmarks
+	FTStr  szStratMode;
+	DlgGetControlValue("ctlQuoteMode",szStratMode.str());
+		
+	MarketInfo minfoQuote(symQuote), minfoHedge(symHedge);
+	double quoteBid=0.0, quoteAsk=0.0, hedgeBid=0.0, hedgeAsk=0.0, benchBid=0.0, benchOffer=0.0;
+	FTStr szBenchBid, szBenchOffer;
+	quoteBid = minfoQuote.GetBid();
+	quoteAsk = minfoQuote.GetAsk();
+	hedgeBid = minfoHedge.GetBid();
+	hedgeAsk = minfoHedge.GetAsk();
+	
+	if (!strcmp(szStratMode.str(), STRAT_MODE_AGGRESSIVE))
+	{
+		benchBid = quoteAsk - hedgeBid;
+		benchOffer = quoteBid - hedgeAsk;
+	}
+	else
+	{
+		benchBid = quoteBid - hedgeBid;
+		benchOffer = quoteAsk - hedgeAsk;
+	}
+
+	szBenchBid=""; szBenchBid+=benchBid;
+	szBenchOffer=""; szBenchOffer+=benchOffer;
+
+	DlgSetControlValue("ctlBidBench", szBenchBid.str());
+	DlgSetControlValue("ctlOfferBench", szBenchOffer.str());
+	
+}
+
+else if(szParam[0] == 'R')// REFRESH
+{
+	FTStr symQuote, symHedge, szStratMode;
+	DlgGetControlValue("symbolOption1", symQuote.str());
+	DlgGetControlValue("symbolOption2", symHedge.str());
+	
+	DlgGetControlValue("ctlQuoteMode",szStratMode.str());
+	
+	// Refresh benchmarks
+	MarketInfo minfoQuote(symQuote), minfoHedge(symHedge);
+
+	double quoteBid=0.0, quoteAsk=0.0, hedgeBid=0.0, hedgeAsk=0.0, benchBid=0.0, benchOffer=0.0;
+	FTStr szBenchBid, szBenchOffer;
+	quoteBid = minfoQuote.GetBid();
+	quoteAsk = minfoQuote.GetAsk();
+	hedgeBid = minfoHedge.GetBid();
+	hedgeAsk = minfoHedge.GetAsk();
+	
+	if (!strcmp(szStratMode.str(), STRAT_MODE_AGGRESSIVE))
+	{
+		benchBid = quoteAsk - hedgeBid;
+		benchOffer = quoteBid - hedgeAsk;
+	}
+	else
+	{
+		benchBid = quoteBid - hedgeBid;
+		benchOffer = quoteAsk - hedgeAsk;
+	}
+
+	szBenchBid=""; szBenchBid+=benchBid;
+	szBenchOffer=""; szBenchOffer+=benchOffer;
+
+	DlgSetControlValue("ctlBidBench", szBenchBid.str());
+	DlgSetControlValue("ctlOfferBench", szBenchOffer.str());
+	
+}
+
+else if (szParam[0] == 'Q')// QTY
+{
+	FTStr szOrdLots, szMinLots, szOrdQty;
+	DlgGetControlValue("ctlOrdLot", szOrdLots.str());
+	DlgGetControlValue("MinLotSize", szMinLots.str());
+	int nOrdLots = atoi (szOrdLots);
+	int nMinLots = atoi(szMinLots);
+	int nOrdQty = 0;
+	nOrdQty = nOrdLots * nMinLots;
+	szOrdQty = ""; szOrdQty+=nOrdQty;
+	DlgSetControlValue("OrdQtyLots", szOrdQty.str());
+}
+else if (szParam[0] == 'C')// CONFIRM
+{
+	double dBidSpread=0.0, dOfferSpread=0.0, dMaxLoss;
+	int	nLotSizeQuote=0, nLotSizeHedge=0, nOrdSize=0, nOrdQty=0, nStageCnt=0, nSpreadInterval=0;
+	int nPayUpTicks=0, nMaxRpl=0, nMaxPos=0, nStratId;
+	int nStgAd = 0 ,nAdInt = 0;
+	int nQuoteMul =0,nHedgeMul = 0, nQuoteRa = 1, nHedgeRa = 1;
+	FTStr szTime, szStratId, szQuoteSymbol, szHedgeSymbol, szStratName, szPortfolio, szStratPort, szStratMode;
+	FTStr szBidSpd, szOfferSpd, szLotSizeQuote, szLotSizeHedge, szOrdSize, szOrdQty;
+	FTStr szStgCnt, szSpdInt, szPayUpTicks, szMaxRpl, szMaxPos, szMaxLoss;
+	FTStr szStgAd,szAdInt,szQuoteMul,szHedgeMul,szQuoteRa,szHedgeRa;
+	double g_dEpsilon = 0.0001;
+	if (IsStratInEditMode)
+	{
+		RowInfoArray aRows;
+		MainGetSelectedRows(aRows);
+		szPortfolio = aRows[0].GetPortfolio();
+	}
+	else
+	{
+		Current_Time6(szTime.str());
+		szStratId = szTime;
+		nStratId = atoi(szStratId.str()); 
+	
+		DlgGetControlValue("StratName", szStratName.str());
+	
+		if(strlen(szStratName.str()) == 0)
+		{
+			szStratName = szStratId;
+		}
+		
+		szStratPort = TraderName(); 
+		szStratPort+="_"; szStratPort += FLEX_OMRULE_BOAD_SPD;
+		szStratPort+="_"; szStratPort += szStratId;
+		
+		szPortfolio = szStratPort;
+
+	}
+	
+	DlgGetControlValue("symbolOption1",szQuoteSymbol.str());
+	DlgGetControlValue("symbolOption2",szHedgeSymbol.str());
+	
+	/* Sanity Checks: Symbol */
+	if (!strcmp(szQuoteSymbol.str(),szHedgeSymbol.str()))
+	{
+		MsgBox("Invalid Symbols Selection", "Please enter two different symbols", 'E');
+		return true;
+	}
+	if (GetInstrType(szQuoteSymbol.str()) != GetInstrType(szHedgeSymbol.str()))
+	{
+		MsgBox("Invalid Symbols Selection", "Please enter two symbols with same underlying", 'E');
+		return true;
+	}
+	/* Sanity Checks : Symbol */
+	
+	DlgGetControlValue("ctlBidBench",szBidSpd.str());
+	dBidSpread = atof(szBidSpd.str());
+	DlgGetControlValue("ctlOfferBench",szOfferSpd.str());
+	dOfferSpread = atof(szOfferSpd.str());
+	
+	/*check bid-offer spread @rafael*/
+	if (dBidSpread - dOfferSpread>=-g_dEpsilon)
+	{
+		MsgBox("Unreasonable Spread", "Bid Spread >= Offer Spread", 'E');
+		return true;
+	}
+		
+	/*check bid-offer spread  vs mtk spread @rafael*/
+	MarketInfo minfoQuote(szQuoteSymbol), minfoHedge(szHedgeSymbol);
+	FTStr szBenchBid, szBenchOffer;
+	double dMktBidSpread  =  minfoQuote.GetBid() - minfoHedge.GetBid();
+	double dMktAskSpread = minfoQuote.GetAsk() - minfoHedge.GetAsk();
+	double  dTickSize = GetTickSizeForSymbol(szQuoteSymbol);
+	if ((dBidSpread - dMktBidSpread)>= 5* dTickSize  || (dMktAskSpread - dOfferSpread) >= 5* dTickSize )
+	{
+		MsgBox("Unreasonable Spread", "[bid spread-market bid sprad] >=5 or  [market ask sprad-ask spread] >=5  ", 'E');
+		return true;
+	}
+	
+	DlgGetControlValue("ctlQuoteMode",szStratMode.str());
+	if (!strlen(szStratMode.str()))
+	{
+		MsgBox("Invalid Quoting Mode", "Please select a valid quoting mode", 'E');
+		return true;
+	}
+	
+	DlgGetControlValue("LotSizeQuote",szLotSizeQuote.str());
+	nLotSizeQuote = atoi(szLotSizeQuote.str());
+	DlgGetControlValue("LotSizeHedge",szLotSizeHedge.str());
+	nLotSizeHedge = atoi(szLotSizeHedge.str());
+	
+	if (nLotSizeQuote <= 0 || nLotSizeHedge <= 0)
+	{
+		strRuleLog=strRuleName; strRuleLog+=" LotSizeQuote=";strRuleLog+=nLotSizeQuote;
+		strRuleLog+=" LotSizeHedge="; strRuleLog+=nLotSizeHedge;
+		strRuleLog+=" : Invalid LotSize!";
+		Pop_Msg(strRuleLog);
+		
+		MsgBox("Invalid Lot Size", "Failed to retrieved LotSize from market feed!", 'E');
+		
+		return true;
+	}
+	
+	DlgGetControlValue("ctlOrdLot",szOrdSize.str());
+	nOrdSize = atoi(szOrdSize.str());
+		
+	DlgGetControlValue("OrdQtyLots",szOrdQty.str());
+	nOrdQty = atoi(szOrdQty.str());
+	
+	DlgGetControlValue("ctlStageCount",szStgCnt.str());
+	nStageCnt = atoi(szStgCnt.str());
+	DlgGetControlValue("ctlSpreadInterval",szSpdInt.str());
+	nSpreadInterval = atoi(szSpdInt.str());
+	
+	DlgGetControlValue("ctlPayUpTicks",szPayUpTicks.str());
+	nPayUpTicks = atoi(szPayUpTicks.str());
+	
+	DlgGetControlValue("cltMaxRpl",szMaxRpl.str());
+	nMaxRpl = atoi(szMaxRpl.str());
+	
+	DlgGetControlValue("ctlMaxPos",szMaxPos.str());
+	nMaxPos = atoi(szMaxPos.str());
+	
+	DlgGetControlValue("ctlMaxLoss",szMaxLoss.str());
+	dMaxLoss = atof(szMaxLoss.str());
+
+	DlgGetControlValue("ctlStageAdjustment",szStgAd.str());
+	nStgAd = atoi(szStgAd.str());
+	
+	DlgGetControlValue("ctlAdjustmentInterval",szAdInt.str());
+	nAdInt = atoi(szAdInt.str());
+	
+	DlgGetControlValue("ctlQuoteMul",szQuoteMul.str());
+	nQuoteMul = atoi(szQuoteMul.str());
+	
+	DlgGetControlValue("ctlHedgeMul",szHedgeMul.str());
+	nHedgeMul = atoi(szHedgeMul.str());
+	
+	DlgGetControlValue("ctlQuoteRa",szQuoteRa.str());
+	nQuoteRa = atoi(szQuoteRa.str());
+	
+	DlgGetControlValue("ctlHedgeRa",szHedgeRa.str());
+	nHedgeRa = atoi(szHedgeRa.str());
+	
+	/* Sanity Check: Stage and MaxPos */
+	
+	if (nOrdQty * nStageCnt > nMaxPos)
+	{
+		strRuleLog=strRuleName; strRuleLog+=" StageCount=";strRuleLog+=nStageCnt;
+		strRuleLog+=" OrdQty="; strRuleLog+=nOrdQty;
+		strRuleLog+=" Greater Than MaxPos="; strRuleLog+=nMaxPos;
+		strRuleLog+="!";
+		Pop_Msg1(strRuleLog);
+		
+		MsgBox("Invalid StageCount/MaxPos", "StageCount with OrdQty exceeds MaxPos", 'E');
+		
+		return true;
+	}
+	/* Sanity Check: Stage and MaxPos */
+	
+	if(IsStratInEditMode)
+	{
+		IsStratInEditMode = false;
+		
+		if (IsEditFromInit == true)
+		{
+			Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_STATUS", STRAT_STATUS_INIT);
+			Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_STATUS", STRAT_STATUS_INIT);
+		}
+		else
+		{
+			Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_STATUS", STRAT_STATUS_EDITED);
+			Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_STATUS", STRAT_STATUS_EDITED);
+		}
+		IsEditFromInit = false;
+	}
+	else
+	{	
+		Add_Symbol_Buy(szPortfolio.str(), szQuoteSymbol.str(), 0);
+		Add_Symbol_Buy(szPortfolio.str(), szHedgeSymbol.str(), 0);
+		
+		Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_LEG", "QUOTE");
+		Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_LEG", "HEDGE");
+		
+		Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_DISPLAY", "QUOTE");
+		Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_DISPLAY", "HEDGE");
+		
+		Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szQuoteSymbol.str(), "STRAT_NAME", szStratName);
+		Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szHedgeSymbol.str(), "STRAT_NAME", szStratName);
+	
+		Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_PORT", szStratPort);
+		Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_PORT", szStratPort);
+	
+		Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_STRATID", nStratId);
+		Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_STRATID", nStratId);
+		
+		Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_LOTSIZE", nLotSizeQuote);
+		Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_LOTSIZE", nLotSizeHedge);
+		
+		Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_STATUS", STRAT_STATUS_INIT);
+		Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_STATUS", STRAT_STATUS_INIT);
+		
+		Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_STRAT_IND", 1);
+		Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_STRAT_IND", 1);
+	}
+	
+	Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_MODE", szStratMode.str());
+	Set_Port_Sym_Column_Str_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_MODE", szStratMode.str());
+
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_BIDSPD", dBidSpread);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_BIDSPD", dBidSpread);
+
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_OFFERSPD", dOfferSpread);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_OFFERSPD", dOfferSpread);
+	
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_RUNNING", 0);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_RUNNING", 0);
+	
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_LOTSIZE", nLotSizeQuote);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_LOTSIZE", nLotSizeHedge);
+	
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_ORDSIZE", nOrdSize);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_ORDSIZE", nOrdSize);
+	
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_ORDQTY", nOrdQty);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_ORDQTY", nOrdQty);
+		
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_STGCNT", nStageCnt);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_STGCNT", nStageCnt);
+	
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_SPDINT", nSpreadInterval);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_SPDINT", nSpreadInterval);
+	
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_PAYUPTICK", nPayUpTicks);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_PAYUPTICK", nPayUpTicks);
+
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_MAXRPL", nMaxRpl);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_MAXRPL", nMaxRpl);
+
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_MAXPOS", nMaxPos);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_MAXPOS", nMaxPos);
+	
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_MAXLOSS", dMaxLoss);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_MAXLOSS", dMaxLoss);	
+	
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_STGAD", nStgAd);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_STGAD", nStgAd);	
+	
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_ADINT", nAdInt);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_ADINT", nAdInt);	
+	
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_QUMUL", nQuoteMul);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_QUMUL", nQuoteMul);	
+	
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_HEMUL", nHedgeMul);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_HEMUL", nHedgeMul);
+	
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_QURA", nQuoteRa);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_QURA", nQuoteRa);
+	
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szQuoteSymbol.str(), "BO_HERA", nHedgeRa);
+	Set_Port_Sym_Column_Value_Save(szPortfolio.str(), szHedgeSymbol.str(), "BO_HERA", nHedgeRa);
+	
+	DlgRunCommand("OK");
+}
+else if (szParam[0] == 'c')// cancel
+{
+	DlgRunCommand("CLOSE");	
+}
+
+
+_END_FORM_ *****************************************

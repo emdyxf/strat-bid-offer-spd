@@ -1,0 +1,29 @@
+_STRT_NEW_FORM_ 1 BOAD_INIT 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:BOAD_INIT
+DlgSetTabOrder("symbolOption1", 1);
+DlgSetTabOrder("symbolOption2", 2);
+DlgSetTabOrder("ctlBidBench", 3);
+DlgSetTabOrder("ctlOfferBench", 4);
+DlgSetTabOrder("Refresh", 5);
+DlgSetTabOrder("ctlQuoteMode", 6);
+
+DlgSetTabOrder("ctlOrdLot", 7);
+DlgSetTabOrder("ctlStageCount", 8);
+DlgSetTabOrder("ctlSpreadInterval",9);
+DlgSetTabOrder("StratName", 10);
+DlgSetTabOrder("ctlPayUpTicks",11);
+DlgSetTabOrder("cltMaxRpl", 12);
+DlgSetTabOrder("ctlMaxPos", 13);
+DlgSetTabOrder("ctlMaxLoss", 14);
+
+DlgSetTabOrder("ctlStageAdjustment",15);
+DlgSetTabOrder("ctlAdjustmentInterval",16);
+
+DlgSetTabOrder("ctlQuoteMul",17);
+DlgSetTabOrder("ctlHedgeMul",18);
+DlgSetTabOrder("ctlQuoteRa",19);
+DlgSetTabOrder("ctlHedgeRa",20);
+
+return true;
+
+
+_END_FORM_ *****************************************

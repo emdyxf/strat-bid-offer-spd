@@ -1,0 +1,15 @@
+_STRT_NEW_FORM_ 1 BO_SUBSCR_SYMCMD 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:BO_SUBSCR_SYMCMD
+//--start rule--
+Pop_Msg1("RULE: BO_SUBSCR_SYMCMD");
+
+CServerCommand cmd;
+cmd.SetCommandName("SUBSCRIBE");
+cmd.SetParam("TOPIC","FLEX.SYM");
+cmd.SymSendCommand();
+
+return true;
+
+//--end rule--
+
+
+_END_FORM_ *****************************************

@@ -48,7 +48,7 @@ class LogScope
 }; // namespace FlexStrategy
 
 // Common macros for strategy log prints
-#define STRAT_DEBUG_LEVEL	(1)  // 0 - Info; 1 - Verbose; Else - Full.
+#define STRAT_DEBUG_LEVEL	(2)  // 0 - Info; 1 - Verbose; Else - Full.
 
 #if (STRAT_DEBUG_LEVEL == 0 )			// 0 - Info
 	#define _STRAT_LOG_VERB_(a)
@@ -63,10 +63,10 @@ class LogScope
 	#endif
 #endif
 
-#define CERR	StrategyBase::m_Log << "[" << FlexStrategy::Time() << "] ERROR  [" << setw(24) << __func__ << "::" << setw(4) << __LINE__ << "] "
-#define CWARN	StrategyBase::m_Log << "[" << FlexStrategy::Time() << "] WARN   [" << setw(24) << __func__ << "::" << setw(4) << __LINE__ << "] "
-#define COUT	StrategyBase::m_Log << "[" << FlexStrategy::Time() << "] OUTPUT [" << setw(24) << __func__ << "::" << setw(4) << __LINE__ << "] "
-#define CINFO	StrategyBase::m_Log << "[" << FlexStrategy::Time() << "] INFO   [" << setw(24) << __func__ << "::" << setw(4) << __LINE__ << "] "
-#define CDEBUG	StrategyBase::m_Log << "[" << FlexStrategy::Time() << "] DEBUG  [" << setw(24) << __func__ << "::" << setw(4) << __LINE__ << "] "
+#define CERR	StrategyBase::m_Log << "[" << FlexStrategy::Time() << "] ERROR  [" << setw(24) << __func__ << "] "
+#define CWARN	StrategyBase::m_Log << "[" << FlexStrategy::Time() << "] WARN   [" << setw(24) << __func__ << "] "
+#define COUT	StrategyBase::m_Log << "[" << FlexStrategy::Time() << "] OUTPUT [" << setw(24) << __func__ << "] "
+#define CINFO	StrategyBase::m_Log << "[" << FlexStrategy::Time() << "] INFO   [" << setw(24) << __func__ << "] "
+#define CDEBUG	StrategyBase::m_Log << "[" << FlexStrategy::Time() << "] DEBUG  [" << setw(24) << __func__ << "] "
 
 #endif // #ifndef _STRATCOMMON_LOGGER_H_

@@ -1,0 +1,17 @@
+_STRT_NEW_FORM_ 1 BO_OINFO_TIME_PORT 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:BO_OINFO_TIME_PORT
+/***************************************************
+Strat Rule. Refresh the all order time to excel readable time before exporting.
+**************************************************/
+
+FT_ORDER_INFO oinfo;
+int n = Get_All_Orders(oinfo);
+
+for(int i = 0; i < n; i++)
+{
+	RunRuleOnOrder(oinfo, i, BO_SET_OINFO_TIME);
+}
+
+return true;
+
+
+_END_FORM_ *****************************************

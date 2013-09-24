@@ -1,0 +1,5 @@
+_STRT_NEW_FORM_ 1 BO_STRAT_CHECK 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:BO_STRAT_CHECK
+return true;
+
+
+_END_FORM_ *****************************************

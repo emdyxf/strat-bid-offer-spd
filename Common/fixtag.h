@@ -43,7 +43,13 @@
 
 #define	FIX_TAG_STGMAXCOUNT_BO		9521
 #define FIX_TAG_STGSPDINTERVAL_BO	9522
-
+//adjustment
+#define	FIX_TAG_STGAD_BOAD		9517
+#define FIX_TAG_ADINT_BOAD	    9518
+#define FIX_TAG_QUMUL_BOAD	    9524
+#define FIX_TAG_HEMUL_BOAD	    9525
+#define FIX_TAG_QURA_BOAD	    9526
+#define FIX_TAG_HERA_BOAD	    9527
 #endif // #ifndef _BOSPD_FIXTAGS_H_
 
 #endif // #ifndef _STRATCOMMON_FIXTAG_H_

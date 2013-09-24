@@ -1,0 +1,55 @@
+SD.ORD_TIME SD.ID SD.SYMBOL GA.SYMBOL G.NONE Custom^0
+PRICE:6^61:str:gblank:No:honeydew2:navyblue:rank_n:dyn:exp_n::1:142606331::true::false:unlocked:DESCR!Price
+ID:6^59:str:gblank:No:cornsilk:black:rank_n:dyn:exp_n::1:142606331::true::false:unlocked:DESCR!ID
+ORD_TIME:11^58:HHMMSS:gblank:No:cornsilk:black:rank_n:dyn:exp_n::1:142606331::true::false:unlocked:DESCR!Time
+ORD_SIDE:4^44:str:gsum:No:#ADD8E6:navyblue:rank_n:dyn:exp_n::1:142606331::true::false:unlocked:DESCR!Side
+ORDER_STATUS:8^56:str:gblank:No:cornsilk:black:rank_n:dyn:exp_n::1:142606331::true::false:unlocked:DESCR!Status
+XCHG_ORDERID:10^60:str:gblank:No:#E5E5E5:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!XCHG ORDERID
+BROKER:6^58:str:gblank:No:cornsilk:black:rank_n:dyn:exp_n::1:142606331::true::false:unlocked:DESCR!Dest
+EXEC_SHARES:5^52:int_com:gsum:No:honeydew2:blue:rank_n:dyn:exp_n::1:142606331::true::false:unlocked:DESCR!Execs
+AVG_PRICE:10^61:frac:gblank:No:honeydew2:blue:rank_n:dyn:exp_n::1:142606331::true::false:unlocked:DESCR!AvgPx
+ORDERED_SHARES:8^48:int_com:gsum:No:#ADD8E6:navyblue:rank_n:dyn:exp_n::1:142606331::true::false:unlocked:DESCR!Ordered
+LEAVES:8^48:int_com:gsum:No:white:navyblue:rank_n:dyn:exp_n::1:142606331::true::false:unlocked:DESCR!Working
+COMMITTED:8^48:int_com:gsum:No:#ADD8E6:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!COMMITTED
+PCT_DONE:9^54:pctdone:gblank:No:cornsilk:black:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!PCT DONE
+OUTS:8^48:int_com:gblank:No:cornsilk:black:rank_n:dyn:exp_n::1:142606331::true::false:unlocked:DESCR!Outs
+FILL_TIME:11^78:HHMMSS:gblank:No:#FF0000:navyblue:rank_n:dyn:exp_n::1:142606331::true::false:unlocked:DESCR!LastFillTime
+ND_SHARES:8^48:int_com:gblank:No:cornsilk:black:rank_n:dyn:exp_n::1:142606331::true::false:unlocked:DESCR!ND
+ORDER_TYPE:15^90:str:gblank:No:cornsilk:black:rank_n:dyn_h:exp_n::1:142606331::true::false:unlocked:DESCR!Type
+LEAVES_VALUE:11^66:int_com:gsum:No:cornsilk:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!LEAVES VALUE
+LIMIT_AWAY:9^54:pctdon1:gblank:No:cornsilk:black:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!LIMIT AWAY
+PRIM_STATUS:8^48:str:gblank:No:#FF0000:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!PStatus
+BID:10^60:frac:gblank:No:cornsilk:black:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!BID
+ASK:10^60:frac:gblank:No:cornsilk:black:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!ASK
+LAST:10^60:frac:gblank:No:cornsilk:black:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!LAST
+TRADE_SIZE:10^60:int_com:gblank:No:cornsilk:black:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!TRADE SIZE
+SUGG_ACTION:8^48:str:gblank:No:cornsilk:black:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!SUGG ACTION
+PORTFOLIO:10^105:str:gsum:No:cornsilk:black:rank_n:dyn:exp_n::1:142606331::true::false:unlocked:DESCR!PORTFOLIO
+WAVE:6^73:str:gblank:No:cornsilk:black:rank_n:dyn:exp_n::1:142606331::true::false:unlocked:DESCR!WAVE
+LIMIT_AWAY_VAL:10^60:prec2:gsum:No:cornsilk:black:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!LIMIT AWAY VAL
+ORDER_VALUE:10^60:int_com:gsum:No:cornsilk:black:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!ORDER VALUE
+CLIENT_ID:11^66:int_com:gblank:No:cornsilk:black:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!CLIENT ID
+EXEC_VALUE:10^60:int_com:gsum:No:white:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!EXEC VALUE
+LIMAWAY_LAST:10^60:pctdon1:gblank:No:honeydew2:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!LIMAWAY LAST
+BROKER_ID:6^107:str:gblank:No:honeydew2:navyblue:rank_n:dyn:exp_n::1:142606331::true::false:unlocked:DESCR!BROKER ID
+EXEC_DEST:6^36:str:gblank:No:honeydew2:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!EXEC DEST
+EXPIRY_DATE:8^48:str:gblank:No:#ADD8E6:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!EXPIRY DATE
+ACCOUNT:20^120:str:gblank:No:#ADD8E6:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!ACCOUNT
+PRICE_TYPE:4^49:str:gblank:No:#FF0000:navyblue:rank_n:dyn_h:exp_n::1:142606331::true::false:unlocked:DESCR!Type
+MEMO:30^180:str:gsum:No:#ADD8E6:navyblue:rank_n:dyn:exp_n::1:142606331::true::false:unlocked:DESCR!MEMO
+COMMISSION:10^60:prec2:gsum:No:#FFC0CB:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!COMMISSION
+ORDVAL_SENTBID:10^60:int_com:gsum:No:#FFC0CB:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!ORDVAL SENTBID
+ORDVAL_SENTASK:10^60:int_com:gsum:No:#FFC0CB:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!ORDVAL SENTASK
+SLIP_VALUE:10^60:prec2:gsum:No:#FFC0CB:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!SLIP VALUE
+SLIP_SHARE:10^60:prec2:gsum:No:#FFC0CB:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!SLIP SHARE
+SLIP_BP:10^60:prec2:gblank:No:#FFC0CB:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!SLIP BP
+STRATEGY:12^72:str:gblank:No:#FFC0CB:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!STRATEGY
+SMART_STATUS:6^36:str:gblank:No:#FFC0CB:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!SMART STATUS
+LIMAWAY_SAME:10^60:pctdon1:gblank:No:#FF0000:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!LIMAWAY_SAME
+LIMAWAY_OPP:10^60:pctdon1:gblank:No:#FF0000:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!LIMAWAY_OPP
+STOP_PRICE:10^60:prec2:gblank:No:#FF0000:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!STOP_PRICE
+ORD_DATE:6^36:str:gblank:No:#FF0000:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!ORD_DATE
+RULE_80:6^36:char:gblank:No:#FF0000:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!RULE_80
+CXLRPL_TMPL:6^54:str:gblank:No:#FF0000:navyblue:rank_n:dyn_h:exp_n::1:142606331::false::false:unlocked:DESCR!CXLRPL_TMPL
+ORDER_SENT_TIME:6^30:str:gblank:No:#FF0000:navyblue:rank_n:dyn_h:exp_n::1:142606331::true::false:unlocked:DESCR!ORDER_SENT_TIME
+LAST_FILLED_TIME:6^30:str:gblank:No:#FF0000:navyblue:rank_n:dyn_h:exp_n::1:142606331::true::false:unlocked:DESCR!LAST_FILLED_TIME

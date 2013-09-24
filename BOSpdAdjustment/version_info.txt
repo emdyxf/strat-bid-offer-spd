@@ -1,0 +1,104 @@
+PROJ_BOAD_v3.0.5.20130924
+	In quote&hedge, delete the conditoin: "dHedgePrice/dQuotePrice > mtick.GetAsk() -->dHedgePrice/dQuotePrice=mtick.GetAsk()"
+PROJ_BOAD_v3.0.4
+	In mode STRAT_MODE_CONDITIONAL: delete the "bIsBidHedgeChange" condition 
+PROJ_BOAD_v3.0.3
+	Support Contract Symbols: SR,TA,OI,FG,RM
+PROJ_BOAD_v3.0.2
+	Support Contract Symbols: RB,RU,JM,A, M, Y, P,C,L,J
+PROJ_BOAD_v3.0.1
+	Add function:UpdateStratQuoteCxlRplCount
+	Add function:HandleManualOrderUponCommand
+	In OnClientCommand(add content)
+	In OnStreetOrdCancel(add UpdateStratQuoteCxlRplCount(streetOrder, parentCLIENT_ORDER);)
+	Change HandleQuoteUponMarketData,HandleQuoteUponInvalidSpread
+	Change OrderPriceCorssCheck to OrderPriceCrossCheck(add content)
+PROJ_BOAD_v3.0.0
+	Add ratio & multi price
+	Add stage adjustment and satge interval
+	Optimize the payuptick
+	Change the quote&hedge price -> int(a/b),stage change
+									
+PROJ_BOAD_v2.4.09.20130724
+- Enhancement: Do not send cancel request when order is un-acked, to resolve race condition with CTP
+
+PROJ_BOAD_v2.4.08
+- Enhancement: Optimized ladder layout config to allow up to 36 ladders at the same time
+
+PROJ_BOAD_v2.4.07
+- Enhancement: Optimize OnEvent Rules for event handling
+- Enhancement: Disable auto-refresh on dialog box
+
+PROJ_BOAD_v2.4.06
+- Bug Fixed: Payup Ticks in the hedge leg sell side should be added to benchmark spread
+- Enhancement: Make default MAX_LOSS parameter to be 5000
+
+PROJ_BOAD_v2.4.05
+- Enhancement: When executions received during pending-cancel of replace flow, replace process will be aborted and positions will be managed upon next market tick
+- Modified default ticksize for SHFE Gold to 0.05 (in accordance to exchange statement)
+
++++++++++++++++
+
+PROJ_BOAD_v2.4.04
+- Support cancelling strategy street order from strategy ladder
+- Support displaying account level position and strategy level position on ladder
+- Support generating report for all street orders in the system
+- Support logging of order side/price before preventing from self-trading
+
+---------------
+
+PROJ_BOAD_v2.4.03
+- Disable orders to be sent from strategy portfolio via Ladder
+- Orders can be sent from market match portfolio
+
+---------------
+
+PROJ_BOAD_v2.4.02
+- Support Displaying backend strategy running state in App: running flag, strategy loss, market snapshot at max_loss
+- Enhanced execution mapping by integer comparison of LegId, instead of string comparison of ClientOrderID
+
+---------------
+
+PROJ_BOAD_v2.4.01
+- Allow Strategy to continue running when MAX_POS is breached, but quoting will only be on the side to reduce net position
+
+===============
+
+PROJ_BOAD_v2.3.07
+- Fixed bug in stop/restart strategy
+
+---------------
+
+PROJ_BOAD_v2.3.06
+- Support re-connect to sym on ValidOrderNew if SymConnection not active
+
+---------------
+
+PROJ_BOAD_v2.3.05
+- Support Displaying replace count and net loss in App group summary page
+
+---------------
+
+PROJ_BOAD_v2.3.04
+- Support Quoting Mode: AGGRESSIVE
+
+---------------
+
+PROJ_BOAD_v2.3.03
+- Support Quoting Mode: CONDITIONAL
+
+---------------
+
+PROJ_BOAD_v2.3.02
+- Display Quote Replace count in App
+- When MaxRpl Limit is breached, strategy will be stopped, warning will be prompted in App
+
+---------------
+
+PROJ_BOAD_v2.3.01
+- Support Quoting Mode: ALWAYS
+- Support Contract Symbols: AU, AG, CU, IF
+- Support SHFE Order Replace via CXL/NEW 
+- Support Position Management  
+
+===============

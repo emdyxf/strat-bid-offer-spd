@@ -1,0 +1,39 @@
+_STRT_NEW_FORM_ 1 EXPORT_COLS 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:EXPORT_COLS
+/***************************************************
+Export Execution Report to Windows
+***************************************************/
+
+char szDate[32]="";
+Current_Date8(szDate);
+FTStr Date(szDate);
+
+FTStr Year;
+Date.Left(4,Year);
+
+FTStr Tmp, Month;
+Date.Left(6,Tmp);
+Tmp.Right(2,Month);
+
+FTStr Day;
+Date.Right(2,Day);
+
+FTStr strCurrTime;
+Current_Time6(strCurrTime.str());
+
+char szReport[128]="";
+sprintf(szReport, "%s%s%s%s%s%s%s%s%s","FL_export_", Year.Str(), "_", Month.Str(), "_", Day.Str(),"_" , strCurrTime.str(),".csv");
+
+char szPath[1024];
+sprintf(szPath, "%s\\ushare/report/%s", getenv("FLEXAPP"), szReport);
+
+CopyRemoteToLocalFile(szPath);
+
+FTStr strMsg = "Execution report exported to ";
+strMsg += szPath;
+		MsgBox("File Export", strMsg.str(), 'I');
+Pop_Msg1(strMsg);
+
+return true;
+
+
+_END_FORM_ *****************************************

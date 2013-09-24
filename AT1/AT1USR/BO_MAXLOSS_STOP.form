@@ -1,0 +1,50 @@
+_STRT_NEW_FORM_ 1 BO_MAXLOSS_STOP 0^0:prec2:gblank:No:::rank_n:const_n:exp_n::1:-1::false::false:unlocked:BO_MAXLOSS_STOP
+/***************************************************
+BO Strat Rule. Manage strategy stopped due to Max_Loss
+**************************************************/
+
+char szPort[32] = "";
+Get_param_str(szPort, 0);
+double dNetLossQuote = Get_param_val(0);
+double dNetLossHedge = Get_param_val(1);
+double nActive = Get_param_val(2);
+
+double dStratPnL=0.0, dNetLoss=0.0, dMaxLossBench=0.0;
+
+dNetLoss = dNetLossQuote + dNetLossHedge;
+dStratPnL = - dNetLoss;
+
+static ColumnInfo clMaxLoss("BO_MAXLOSS"), clStatus("BO_STATUS");
+
+FlexAppRules::RowInfoArray aRows;
+int nStratRow = MainGetRows(NULL, szPort, aRows);
+
+if (nStratRow == 2)
+{
+	dMaxLossBench = aRows[0].GetCellValue(clMaxLoss, -1.0);
+
+	FTStr szStatus;
+	aRows[0].GetCellValue(clStatus, szStatus);
+
+	if (!strcmp(szStatus.str(), STRAT_STATUS_CXLD))
+	{
+		return false;
+	}	
+	else if (!strcmp(szStatus.str(), STRAT_STATUS_WORKING) && dMaxLossBench > g_dEpsilon && dNetLoss-dMaxLossBench >= g_dEpsilon)
+	{
+		FTStr msgStop; msgStop="NetLoss [";msgStop+=dNetLoss;msgStop+="] >= MaxLoss ["; msgStop+=dMaxLossBench;msgStop+="]";
+		Pop_Msg_Color(msgStop, 0, "red", "black");
+		
+		AddRowAlert(msgStop.str(), 1, 0, false);
+
+		aRows[0].SetCellValue(clStatus, STRAT_STATUS_STOP, true);
+		aRows[1].SetCellValue(clStatus, STRAT_STATUS_STOP, true);
+		
+		return true;
+	}
+}
+
+return false;
+
+
+_END_FORM_ *****************************************
